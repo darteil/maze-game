@@ -6,13 +6,17 @@ export default class Cube {
 
   constructor(scene: BABYLON.Scene) {
     this.scene = scene;
-    this.mesh = BABYLON.MeshBuilder.CreateBox('box', { width: 10, height: 10, depth: 10 }, scene);
+    this.mesh = BABYLON.MeshBuilder.CreateBox('cube', { width: 10, height: 10, depth: 10 }, scene);
   }
 
   public setPosition(x: number, y: number, z: number) {
     this.mesh.position.set(x, y, z);
   }
 
+  /**
+   * Create moving animation
+   * @param directional Options: 'up', 'down', 'left', 'right'
+   */
   private createMoveAnimation(directional: string): BABYLON.Animation {
     const keys = [];
 
