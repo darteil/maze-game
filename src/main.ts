@@ -1,46 +1,67 @@
 import * as BABYLON from 'babylonjs';
 // import * as cannon from 'cannon';
 import enableDeveloperTools from './developerTools';
+import { createScene } from './scene';
 import Cube from './cube';
 import Platform from './platform';
+import { level } from './level';
 import 'normalize.css';
-75;
+
 const canvas = document.getElementById('root') as HTMLCanvasElement;
 const engine = new BABYLON.Engine(canvas, true);
+const scene = createScene(canvas, engine);
 
-const createScene = function() {
-  const scene = new BABYLON.Scene(engine);
+interface IPlatformCoordinates {
+  x: number;
+  z: number;
+}
+const platforms = new Map<IPlatformCoordinates, Platform>();
+let startPlatform: Platform | null = null;
+let finishPlatform: Platform | null = null;
 
-  const camera = new BABYLON.ArcRotateCamera(
-    'Camera',
-    Math.PI / 2,
-    Math.PI / 8,
-    2,
-    new BABYLON.Vector3(20, 20, 20),
-    scene,
-  );
-  camera.attachControl(canvas, true);
+let currentXCoordinate = 0;
+let currentZCoordinate = 0;
 
-  const light1 = new BABYLON.HemisphericLight('hemisphericLight', new BABYLON.Vector3(10, 10, 0), scene);
-  // const light2 = new BABYLON.PointLight('pointLight', new BABYLON.Vector3(0, 10, -10), scene);
-  // const light3 = new BABYLON.DirectionalLight('directLight', new BABYLON.Vector3(-10, -10, -10), scene);
+for (let i = 0; i < 15; i++) {
+  if (i > 0) currentXCoordinate += 12;
 
-  // light3.position.set(20, 20, 20);
+  for (let j = 0; j < 15; j++) {
+    if (j > 0) currentZCoordinate += 12;
 
-  const postProcess = new BABYLON.FxaaPostProcess('fxaa', 1.0, camera);
+    if (level[i][j] === 1) {
+      const platform = new Platform(scene);
+      platform.setPosition(currentXCoordinate, 2, currentZCoordinate);
 
-  scene.ambientColor = new BABYLON.Color3(0.3, 0.3, 0.3);
+      platforms.set({ x: currentXCoordinate, z: currentZCoordinate }, platform);
+    }
 
-  return scene;
-};
+    if (level[i][j] === 2) {
+      const platform = new Platform(scene);
+      platform.setPosition(currentXCoordinate, 2, currentZCoordinate);
 
-const scene = createScene();
+      startPlatform = platform;
+    }
+
+    if (level[i][j] === 3) {
+      const platform = new Platform(scene);
+      platform.setPosition(currentXCoordinate, 2, currentZCoordinate);
+
+      finishPlatform = platform;
+    }
+  }
+
+  currentZCoordinate = 0;
+}
 
 const cube = new Cube(scene);
-cube.setPosition(0, 5, 0);
 
-const platform = new Platform(scene);
-platform.setPosition(15, 2, 15);
+if (startPlatform) cube.setPosition(startPlatform.mesh.position.x, 9, startPlatform.mesh.position.z);
+
+console.log(scene.activeCamera);
+
+const currentCamera = scene.getCameraByName('Моя Camera');
+
+const updateRoad = () => {};
 
 /*const Directional = {
   up: 75,
