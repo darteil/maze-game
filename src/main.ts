@@ -2,6 +2,7 @@ import * as BABYLON from 'babylonjs';
 // import * as cannon from 'cannon';
 import enableDeveloperTools from './developerTools';
 import Cube from './cube';
+import Platform from './platform';
 import 'normalize.css';
 75;
 const canvas = document.getElementById('root') as HTMLCanvasElement;
@@ -13,15 +14,22 @@ const createScene = function() {
   const camera = new BABYLON.ArcRotateCamera(
     'Camera',
     Math.PI / 2,
-    Math.PI / 2,
+    Math.PI / 8,
     2,
-    new BABYLON.Vector3(0, 0, 5),
+    new BABYLON.Vector3(20, 20, 20),
     scene,
   );
   camera.attachControl(canvas, true);
 
-  const light1 = new BABYLON.HemisphericLight('light1', new BABYLON.Vector3(10, 10, 0), scene);
-  const light2 = new BABYLON.PointLight('light2', new BABYLON.Vector3(0, 10, -10), scene);
+  const light1 = new BABYLON.HemisphericLight('hemisphericLight', new BABYLON.Vector3(10, 10, 0), scene);
+  // const light2 = new BABYLON.PointLight('pointLight', new BABYLON.Vector3(0, 10, -10), scene);
+  // const light3 = new BABYLON.DirectionalLight('directLight', new BABYLON.Vector3(-10, -10, -10), scene);
+
+  // light3.position.set(20, 20, 20);
+
+  const postProcess = new BABYLON.FxaaPostProcess('fxaa', 1.0, camera);
+
+  scene.ambientColor = new BABYLON.Color3(0.3, 0.3, 0.3);
 
   return scene;
 };
@@ -31,7 +39,8 @@ const scene = createScene();
 const cube = new Cube(scene);
 cube.setPosition(0, 5, 0);
 
-const ground = BABYLON.MeshBuilder.CreateGround('ground', { width: 100, height: 100, subdivisions: 2 }, scene);
+const platform = new Platform(scene);
+platform.setPosition(15, 2, 15);
 
 /*const Directional = {
   up: 75,
