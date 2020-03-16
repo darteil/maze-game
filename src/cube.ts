@@ -37,28 +37,28 @@ export default class Cube {
       case 'up': {
         keys.push({
           frame: 100,
-          value: new BABYLON.Vector3(this.mesh.position.x, this.mesh.position.y, this.mesh.position.z - 10),
+          value: new BABYLON.Vector3(this.mesh.position.x, this.mesh.position.y, this.mesh.position.z - 12),
         });
         break;
       }
       case 'down': {
         keys.push({
           frame: 100,
-          value: new BABYLON.Vector3(this.mesh.position.x, this.mesh.position.y, this.mesh.position.z + 10),
+          value: new BABYLON.Vector3(this.mesh.position.x, this.mesh.position.y, this.mesh.position.z + 12),
         });
         break;
       }
       case 'left': {
         keys.push({
           frame: 100,
-          value: new BABYLON.Vector3(this.mesh.position.x + 10, this.mesh.position.y, this.mesh.position.z),
+          value: new BABYLON.Vector3(this.mesh.position.x + 12, this.mesh.position.y, this.mesh.position.z),
         });
         break;
       }
       case 'right': {
         keys.push({
           frame: 100,
-          value: new BABYLON.Vector3(this.mesh.position.x - 10, this.mesh.position.y, this.mesh.position.z),
+          value: new BABYLON.Vector3(this.mesh.position.x - 12, this.mesh.position.y, this.mesh.position.z),
         });
         break;
       }
@@ -72,18 +72,38 @@ export default class Cube {
   }
 
   public moveUp() {
-    this.scene.beginDirectAnimation(this.mesh, [this.createMoveAnimation('up')], 0, 100, false, 5);
+    const promise = new Promise((resolve, reject) => {
+      this.scene.beginDirectAnimation(this.mesh, [this.createMoveAnimation('up')], 0, 100, false, 5, () => {
+        resolve('done');
+      });
+    });
+    return promise;
   }
 
   public moveDown() {
-    this.scene.beginDirectAnimation(this.mesh, [this.createMoveAnimation('down')], 0, 100, false, 5);
+    const promise = new Promise((resolve, reject) => {
+      this.scene.beginDirectAnimation(this.mesh, [this.createMoveAnimation('down')], 0, 100, false, 5, () => {
+        resolve('done');
+      });
+    });
+    return promise;
   }
 
   public moveLeft() {
-    this.scene.beginDirectAnimation(this.mesh, [this.createMoveAnimation('left')], 0, 100, false, 5);
+    const promise = new Promise((resolve, reject) => {
+      this.scene.beginDirectAnimation(this.mesh, [this.createMoveAnimation('left')], 0, 100, false, 5, () => {
+        resolve('done');
+      });
+    });
+    return promise;
   }
 
   public moveRight() {
-    this.scene.beginDirectAnimation(this.mesh, [this.createMoveAnimation('right')], 0, 100, false, 5);
+    const promise = new Promise((resolve, reject) => {
+      this.scene.beginDirectAnimation(this.mesh, [this.createMoveAnimation('right')], 0, 100, false, 5, () => {
+        resolve('done');
+      });
+    });
+    return promise;
   }
 }

@@ -4,8 +4,14 @@ import enableDeveloperTools from './developerTools';
 import { createScene } from './scene';
 import Cube from './cube';
 import Platform from './platform';
+import FollowCamera from './camera';
 import { level } from './level';
 import 'normalize.css';
+import { BabylonFileLoaderConfiguration } from 'babylonjs';
+
+const GameState = {
+  moving: false,
+};
 
 const canvas = document.getElementById('root') as HTMLCanvasElement;
 const engine = new BABYLON.Engine(canvas, true);
@@ -59,7 +65,7 @@ if (startPlatform) cube.setPosition(startPlatform.mesh.position.x, 9, startPlatf
 
 console.log(scene.activeCamera);
 
-const currentCamera = scene.getCameraByName('Моя Camera');
+const camera = new FollowCamera(scene, cube.mesh);
 
 const updateRoad = () => {};
 
@@ -77,23 +83,53 @@ const Directional = {
   down: 83,
 };
 
+const moveAction = async (directional: string) => {
+  if (GameState.moving) return;
+  GameState.moving = true;
+
+  switch (directional) {
+    case 'up': {
+      await Promise.all([cube.moveUp(), camera.moveUp()]);
+      GameState.moving = false;
+      break;
+    }
+    case 'down': {
+      await Promise.all([cube.moveDown(), camera.moveDown()]);
+      GameState.moving = false;
+      break;
+    }
+    case 'left': {
+      await Promise.all([cube.moveLeft(), camera.moveLeft()]);
+      GameState.moving = false;
+      break;
+    }
+    case 'right': {
+      await Promise.all([cube.moveRight(), camera.moveRight()]);
+      GameState.moving = false;
+      break;
+    }
+    default:
+      GameState.moving = false;
+  }
+};
+
 window.addEventListener('keydown', (event: KeyboardEvent) => {
   const key = event.which;
 
   if (Directional.up === key) {
-    cube.moveUp();
+    moveAction('up');
   }
 
   if (Directional.down === key) {
-    cube.moveDown();
+    moveAction('down');
   }
 
   if (Directional.left === key) {
-    cube.moveLeft();
+    moveAction('left');
   }
 
   if (Directional.right === key) {
-    cube.moveRight();
+    moveAction('right');
   }
 });
 
