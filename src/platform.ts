@@ -1,8 +1,9 @@
 import * as BABYLON from 'babylonjs';
 
 export default class Platform {
-  scene: BABYLON.Scene;
-  mesh: BABYLON.Mesh;
+  public scene: BABYLON.Scene;
+  public mesh: BABYLON.Mesh;
+  public isVisible = false;
   // showAnimation: BABYLON.Animation;
 
   constructor(scene: BABYLON.Scene) {
@@ -16,7 +17,7 @@ export default class Platform {
     // material.emissiveColor = new BABYLON.Color3(1, 1, 1);
     // material.ambientColor = new BABYLON.Color3(0.23, 0.98, 0.53);
 
-    // material.alpha = 0.5;
+    material.alpha = 0.0;
 
     this.mesh.material = material;
   }
@@ -99,10 +100,12 @@ export default class Platform {
   hide() {
     const animation = this.createAnimation('hide');
     this.scene.beginDirectAnimation(this.mesh, [animation[0], animation[1]], 0, 100, false, 5);
+    this.isVisible = false;
   }
 
   show() {
     const animation = this.createAnimation('show');
     this.scene.beginDirectAnimation(this.mesh, [animation[0], animation[1]], 0, 100, false, 5);
+    this.isVisible = true;
   }
 }

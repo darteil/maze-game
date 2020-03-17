@@ -8,9 +8,9 @@ export default class FollowCamera {
     this.scene = scene;
     this.camera = new BABYLON.FollowCamera('MainFollowCamera', new BABYLON.Vector3(0, 0, 0), scene);
 
-    this.camera.position.x = target.position.x + 60;
-    this.camera.position.y = target.position.y + 60;
-    this.camera.position.z = target.position.z + 60;
+    this.camera.position.x = target.position.x + 100;
+    this.camera.position.y = target.position.y + 100;
+    this.camera.position.z = target.position.z + 100;
     this.camera.setTarget(target.getAbsolutePosition());
   }
 
