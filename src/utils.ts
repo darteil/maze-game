@@ -46,10 +46,10 @@ export const enableDeveloperTools = (scene: BABYLON.Scene) => {
   });
 };
 
-export const createVisibilityKeys = (x: number, z: number, step: number): string[] => {
+export const createVisibilityCoordinates = (x: number, z: number, step: number): string[] => {
   const visibility = 2;
 
-  const keys = [
+  const coordinates = [
     `x: ${x}, z: ${z}`,
     `x: ${x - step}, z: ${z}`,
     `x: ${x - step}, z: ${z + step}`,
@@ -80,5 +80,5 @@ export const createVisibilityKeys = (x: number, z: number, step: number): string
     `x: ${x + step}, z: ${z - step * visibility}`,
   ];
 
-  return keys;
+  return coordinates;
 };

@@ -1,10 +1,19 @@
 import * as BABYLON from 'babylonjs';
+import * as GUI from 'babylonjs-gui';
 import { createScene } from './scene';
 import { Levels, ILevel } from './levels';
 import Platform from './platform';
 import Cube from './cube';
 import FollowCamera from './camera';
-import { createVisibilityKeys } from './utils';
+import { createVisibilityCoordinates } from './utils';
+
+/**
+ * distance between the center of the platform and the edge = 5
+ * distance between platforms = 2
+ *
+ * then distance between centers of the two platforms is equal 5 + 5 + 2 = 12
+ * starting position of the platform along the Y axis = -8
+ */
 
 interface IGameState {
   moving: boolean;
@@ -33,30 +42,85 @@ export default class Game {
   private finishPlatform: Platform | null = null;
 
   private currentLevel: number = 0;
-  private countOfLevels: number = Levels.length;
 
   private cube: Cube;
   private camera: FollowCamera;
   private gameState: IGameState;
+
+  private guiTexture: GUI.AdvancedDynamicTexture;
 
   constructor(canvas: HTMLCanvasElement) {
     this.canvas = canvas;
     this.engine = new BABYLON.Engine(this.canvas, true);
     this.scene = createScene(this.canvas, this.engine);
     this.cube = new Cube(this.scene);
-    this.camera = new FollowCamera(this.scene, this.cube.mesh);
+    this.camera = new FollowCamera(this.scene);
     this.gameState = {
       moving: false,
     };
+
+    this.guiTexture = GUI.AdvancedDynamicTexture.CreateFullscreenUI('UI', true, this.scene);
   }
 
   public init() {
+    this.initControl();
+    this.createGUI();
+    this.render();
+    this.start();
+  }
+
+  private start() {
     this.startNewLevel(this.currentLevel);
     if (this.startPlatform)
       this.cube.setPosition(this.startPlatform.mesh.position.x, 9, this.startPlatform.mesh.position.z);
-    this.initControl();
+    this.camera.setTarget(this.cube.mesh);
     this.updateRoad();
-    this.render();
+  }
+
+  private restart() {
+    this.platforms.forEach((platform: Platform) => {
+      this.scene.removeMesh(platform.mesh);
+    });
+    this.platforms.clear();
+    if (this.startPlatform) {
+      this.scene.removeMesh(this.startPlatform.mesh);
+      this.startPlatform = null;
+    }
+    if (this.finishPlatform) {
+      this.scene.removeMesh(this.finishPlatform.mesh);
+      this.finishPlatform = null;
+    }
+    this.gameState = {
+      moving: false,
+    };
+    this.start();
+  }
+
+  private createGUI() {
+    let padding = 0;
+
+    for (let i = 0; i < Levels.length; i++) {
+      const ellipse = new GUI.Ellipse();
+      ellipse.horizontalAlignment = GUI.Container.HORIZONTAL_ALIGNMENT_LEFT;
+      ellipse.verticalAlignment = GUI.Control.VERTICAL_ALIGNMENT_TOP;
+      ellipse.width = '40px';
+      ellipse.height = '40px';
+      ellipse.color = 'Orange';
+      ellipse.thickness = 2;
+      if (i === this.currentLevel) {
+        ellipse.background = '#8f5dbc';
+      }
+      ellipse.background = 'green';
+      ellipse.top = 5;
+      ellipse.left = padding;
+      this.guiTexture.addControl(ellipse);
+
+      const label = new GUI.TextBlock();
+      label.text = `${i + 1}`;
+      ellipse.addControl(label);
+
+      padding += 45;
+    }
   }
 
   private startNewLevel(numberOfLevel: number) {
@@ -103,14 +167,14 @@ export default class Game {
     }
   }
 
-  updateRoad() {
-    const keys = createVisibilityKeys(this.cube.mesh.position.x, this.cube.mesh.position.z, 12);
+  private updateRoad() {
+    const coordinates = createVisibilityCoordinates(this.cube.mesh.position.x, this.cube.mesh.position.z, 12);
 
     this.platforms.forEach((value: Platform, key: string) => {
       let flag = false;
 
-      for (let i = 0; i < keys.length; i++) {
-        if (key === keys[i]) {
+      for (let i = 0; i < coordinates.length; i++) {
+        if (key === coordinates[i]) {
           flag = true;
           if (!value.isVisible) {
             value.show();
@@ -123,31 +187,69 @@ export default class Game {
     });
   }
 
-  async moveAction(directional: string) {
+  private cubeCorrectPositionCheck(): boolean {
+    const currentPosition = `x: ${this.cube.mesh.position.x}, z: ${this.cube.mesh.position.z}`;
+    return this.platforms.has(currentPosition);
+  }
+
+  private cubeFinishPositionCheck(): boolean {
+    if (!this.finishPlatform) return false;
+
+    const currentPosition = `x: ${this.cube.mesh.position.x}, z: ${this.cube.mesh.position.z}`;
+    const finishPlatformPosition = `x: ${this.finishPlatform.mesh.position.x}, z: ${this.finishPlatform.mesh.position.z}`;
+
+    return currentPosition === finishPlatformPosition;
+  }
+
+  private async moveAction(directional: string) {
     if (this.gameState.moving) return;
     this.gameState.moving = true;
 
     switch (directional) {
       case 'up': {
         await Promise.all([this.cube.moveUp(), this.camera.moveUp()]);
+        this.cubeCorrectPositionCheck();
+        if (this.cubeFinishPositionCheck()) {
+          this.currentLevel += 1;
+          this.restart();
+          break;
+        }
         this.updateRoad();
         this.gameState.moving = false;
         break;
       }
       case 'down': {
         await Promise.all([this.cube.moveDown(), this.camera.moveDown()]);
+        this.cubeCorrectPositionCheck();
+        if (this.cubeFinishPositionCheck()) {
+          this.currentLevel += 1;
+          this.restart();
+          break;
+        }
         this.updateRoad();
         this.gameState.moving = false;
         break;
       }
       case 'left': {
         await Promise.all([this.cube.moveLeft(), this.camera.moveLeft()]);
+        this.cubeCorrectPositionCheck();
+        if (this.cubeFinishPositionCheck()) {
+          this.currentLevel += 1;
+          this.restart();
+          break;
+        }
         this.updateRoad();
         this.gameState.moving = false;
         break;
       }
       case 'right': {
         await Promise.all([this.cube.moveRight(), this.camera.moveRight()]);
+        this.cubeCorrectPositionCheck();
+        if (this.cubeFinishPositionCheck()) {
+          this.currentLevel += 1;
+          this.restart();
+          break;
+        }
         this.updateRoad();
         this.gameState.moving = false;
         break;

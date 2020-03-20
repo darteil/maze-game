@@ -4,13 +4,16 @@ export default class FollowCamera {
   public scene: BABYLON.Scene;
   public camera: BABYLON.FollowCamera;
 
-  constructor(scene: BABYLON.Scene, target: BABYLON.Mesh) {
+  constructor(scene: BABYLON.Scene) {
     this.scene = scene;
     this.camera = new BABYLON.FollowCamera('FollowCamera', new BABYLON.Vector3(0, 0, 0), scene);
+  }
 
-    this.camera.position.x = target.position.x + 100;
-    this.camera.position.y = target.position.y + 100;
-    this.camera.position.z = target.position.z + 100;
+  public setTarget(target: BABYLON.Mesh) {
+    this.camera.position.x = target.position.x + 80;
+    this.camera.position.y = target.position.y + 80;
+    this.camera.position.z = target.position.z + 80;
+
     this.camera.setTarget(target.getAbsolutePosition());
   }
 
