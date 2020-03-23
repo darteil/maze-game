@@ -3,6 +3,7 @@ import * as BABYLON from 'babylonjs';
 export default class Platform {
   public scene: BABYLON.Scene;
   public mesh: BABYLON.Mesh;
+  public material: BABYLON.StandardMaterial;
   public isVisible = false;
   // showAnimation: BABYLON.Animation;
 
@@ -10,16 +11,16 @@ export default class Platform {
     this.scene = scene;
     this.mesh = BABYLON.MeshBuilder.CreateBox('platform', { width: 10, height: 4, depth: 10 }, scene);
 
-    var material = new BABYLON.StandardMaterial('cube_material', scene);
+    this.material = new BABYLON.StandardMaterial('cube_material', scene);
 
     // material.diffuseColor = new BABYLON.Color3(1, 0, 1);
     // material.specularColor = new BABYLON.Color3(0.5, 0.6, 0.87);
     // material.emissiveColor = new BABYLON.Color3(1, 1, 1);
     // material.ambientColor = new BABYLON.Color3(0.23, 0.98, 0.53);
 
-    material.alpha = 0.0;
+    this.material.alpha = 0.0;
 
-    this.mesh.material = material;
+    this.mesh.material = this.material;
   }
 
   public setPosition(x: number, y: number, z: number) {

@@ -1,10 +1,10 @@
 import * as BABYLON from 'babylonjs';
-import * as GUI from 'babylonjs-gui';
 import { createScene } from './scene';
 import { Levels, ILevel } from './levels';
 import Platform from './platform';
 import Cube from './cube';
 import FollowCamera from './camera';
+import LevelsGui from './levelsGui';
 import { createVisibilityCoordinates } from './utils';
 
 /**
@@ -41,13 +41,13 @@ export default class Game {
   private startPlatform: Platform | null = null;
   private finishPlatform: Platform | null = null;
 
-  private currentLevel: number = 0;
+  public currentLevel: number = 0;
 
   private cube: Cube;
   private camera: FollowCamera;
   private gameState: IGameState;
 
-  private guiTexture: GUI.AdvancedDynamicTexture;
+  private levelGui: LevelsGui;
 
   constructor(canvas: HTMLCanvasElement) {
     this.canvas = canvas;
@@ -59,12 +59,11 @@ export default class Game {
       moving: false,
     };
 
-    this.guiTexture = GUI.AdvancedDynamicTexture.CreateFullscreenUI('UI', true, this.scene);
+    this.levelGui = new LevelsGui(this, Levels.length, this.currentLevel);
   }
 
   public init() {
     this.initControl();
-    this.createGUI();
     this.render();
     this.start();
   }
@@ -77,50 +76,27 @@ export default class Game {
     this.updateRoad();
   }
 
-  private restart() {
+  public restart() {
     this.platforms.forEach((platform: Platform) => {
       this.scene.removeMesh(platform.mesh);
+      platform.material.dispose();
     });
     this.platforms.clear();
     if (this.startPlatform) {
       this.scene.removeMesh(this.startPlatform.mesh);
+      this.startPlatform.material.dispose();
       this.startPlatform = null;
     }
     if (this.finishPlatform) {
       this.scene.removeMesh(this.finishPlatform.mesh);
+      this.finishPlatform.material.dispose();
       this.finishPlatform = null;
     }
     this.gameState = {
       moving: false,
     };
+    this.levelGui.setCurrentLevel(this.currentLevel);
     this.start();
-  }
-
-  private createGUI() {
-    let padding = 0;
-
-    for (let i = 0; i < Levels.length; i++) {
-      const ellipse = new GUI.Ellipse();
-      ellipse.horizontalAlignment = GUI.Container.HORIZONTAL_ALIGNMENT_LEFT;
-      ellipse.verticalAlignment = GUI.Control.VERTICAL_ALIGNMENT_TOP;
-      ellipse.width = '40px';
-      ellipse.height = '40px';
-      ellipse.color = 'Orange';
-      ellipse.thickness = 2;
-      if (i === this.currentLevel) {
-        ellipse.background = '#8f5dbc';
-      }
-      ellipse.background = 'green';
-      ellipse.top = 5;
-      ellipse.left = padding;
-      this.guiTexture.addControl(ellipse);
-
-      const label = new GUI.TextBlock();
-      label.text = `${i + 1}`;
-      ellipse.addControl(label);
-
-      padding += 45;
-    }
   }
 
   private startNewLevel(numberOfLevel: number) {
@@ -201,6 +177,17 @@ export default class Game {
     return currentPosition === finishPlatformPosition;
   }
 
+  private cubeMovingCheck() {
+    if (!this.cubeCorrectPositionCheck() && !this.cubeFinishPositionCheck()) {
+      this.restart();
+    }
+    if (this.cubeFinishPositionCheck()) {
+      this.currentLevel += 1;
+      this.restart();
+    }
+    this.updateRoad();
+  }
+
   private async moveAction(directional: string) {
     if (this.gameState.moving) return;
     this.gameState.moving = true;
@@ -208,19 +195,16 @@ export default class Game {
     switch (directional) {
       case 'up': {
         await Promise.all([this.cube.moveUp(), this.camera.moveUp()]);
-        this.cubeCorrectPositionCheck();
-        if (this.cubeFinishPositionCheck()) {
-          this.currentLevel += 1;
-          this.restart();
-          break;
-        }
-        this.updateRoad();
+        this.cubeMovingCheck();
         this.gameState.moving = false;
         break;
       }
       case 'down': {
         await Promise.all([this.cube.moveDown(), this.camera.moveDown()]);
-        this.cubeCorrectPositionCheck();
+        if (!this.cubeCorrectPositionCheck() && !this.cubeFinishPositionCheck()) {
+          this.restart();
+          break;
+        }
         if (this.cubeFinishPositionCheck()) {
           this.currentLevel += 1;
           this.restart();
@@ -232,7 +216,10 @@ export default class Game {
       }
       case 'left': {
         await Promise.all([this.cube.moveLeft(), this.camera.moveLeft()]);
-        this.cubeCorrectPositionCheck();
+        if (!this.cubeCorrectPositionCheck() && !this.cubeFinishPositionCheck()) {
+          this.restart();
+          break;
+        }
         if (this.cubeFinishPositionCheck()) {
           this.currentLevel += 1;
           this.restart();
@@ -244,7 +231,10 @@ export default class Game {
       }
       case 'right': {
         await Promise.all([this.cube.moveRight(), this.camera.moveRight()]);
-        this.cubeCorrectPositionCheck();
+        if (!this.cubeCorrectPositionCheck() && !this.cubeFinishPositionCheck()) {
+          this.restart();
+          break;
+        }
         if (this.cubeFinishPositionCheck()) {
           this.currentLevel += 1;
           this.restart();
