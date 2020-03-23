@@ -182,8 +182,12 @@ export default class Game {
       this.restart();
     }
     if (this.cubeFinishPositionCheck()) {
-      this.currentLevel += 1;
-      this.restart();
+      if (this.currentLevel === Levels.length - 1) {
+        this.restart();
+      } else {
+        this.currentLevel += 1;
+        this.restart();
+      }
     }
     this.updateRoad();
   }
@@ -201,46 +205,19 @@ export default class Game {
       }
       case 'down': {
         await Promise.all([this.cube.moveDown(), this.camera.moveDown()]);
-        if (!this.cubeCorrectPositionCheck() && !this.cubeFinishPositionCheck()) {
-          this.restart();
-          break;
-        }
-        if (this.cubeFinishPositionCheck()) {
-          this.currentLevel += 1;
-          this.restart();
-          break;
-        }
-        this.updateRoad();
+        this.cubeMovingCheck();
         this.gameState.moving = false;
         break;
       }
       case 'left': {
         await Promise.all([this.cube.moveLeft(), this.camera.moveLeft()]);
-        if (!this.cubeCorrectPositionCheck() && !this.cubeFinishPositionCheck()) {
-          this.restart();
-          break;
-        }
-        if (this.cubeFinishPositionCheck()) {
-          this.currentLevel += 1;
-          this.restart();
-          break;
-        }
-        this.updateRoad();
+        this.cubeMovingCheck();
         this.gameState.moving = false;
         break;
       }
       case 'right': {
         await Promise.all([this.cube.moveRight(), this.camera.moveRight()]);
-        if (!this.cubeCorrectPositionCheck() && !this.cubeFinishPositionCheck()) {
-          this.restart();
-          break;
-        }
-        if (this.cubeFinishPositionCheck()) {
-          this.currentLevel += 1;
-          this.restart();
-          break;
-        }
-        this.updateRoad();
+        this.cubeMovingCheck();
         this.gameState.moving = false;
         break;
       }
