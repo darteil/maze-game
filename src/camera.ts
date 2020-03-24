@@ -7,6 +7,7 @@ export default class FollowCamera {
   constructor(scene: BABYLON.Scene) {
     this.scene = scene;
     this.camera = new BABYLON.FollowCamera('FollowCamera', new BABYLON.Vector3(0, 0, 0), scene);
+    this.scene.activeCamera = this.camera;
   }
 
   public setTarget(target: BABYLON.Mesh) {

@@ -26,6 +26,13 @@ interface IGameState {
   down: 74,
 };*/
 
+/*const Directional = {
+  up: 38,
+  left: 37,
+  right: 39,
+  down: 40,
+};*/
+
 const Directional = {
   up: 87,
   left: 65,
@@ -35,7 +42,7 @@ const Directional = {
 
 export default class Game {
   public scene: BABYLON.Scene;
-  private canvas: HTMLCanvasElement;
+  public canvas: HTMLCanvasElement;
   private engine: BABYLON.Engine;
   private platforms: Map<string, Platform> = new Map();
   private startPlatform: Platform | null = null;
@@ -43,7 +50,7 @@ export default class Game {
 
   public currentLevel: number = 0;
 
-  private cube: Cube;
+  public cube: Cube;
   private camera: FollowCamera;
   private gameState: IGameState;
 
