@@ -2,19 +2,13 @@ import * as BABYLON from 'babylonjs';
 import Game from './game';
 
 export const enableDeveloperTools = (game: Game) => {
-  const arcCamera = new BABYLON.ArcRotateCamera(
-    'arcCamera',
-    0,
-    0,
-    100,
-    game.cube.mesh.getAbsolutePosition(),
-    game.scene,
-  );
+  const scene = game.sceneInstance.scene;
+  const arcCamera = new BABYLON.ArcRotateCamera('arcCamera', 0, 0, 100, game.cube.mesh.getAbsolutePosition(), scene);
   arcCamera.lowerRadiusLimit = 10;
   arcCamera.useBouncingBehavior = true;
   arcCamera.attachControl(game.canvas, true);
 
-  game.scene.activeCamera = arcCamera;
+  scene.activeCamera = arcCamera;
 
   const size = 200;
   const axisX = BABYLON.Mesh.CreateLines(
@@ -26,7 +20,7 @@ export const enableDeveloperTools = (game: Game) => {
       new BABYLON.Vector3(size, 0, 0),
       new BABYLON.Vector3(size * 0.95, -0.05 * size, 0),
     ],
-    game.scene,
+    scene,
   );
   axisX.color = new BABYLON.Color3(1, 0, 0);
 
@@ -39,7 +33,7 @@ export const enableDeveloperTools = (game: Game) => {
       new BABYLON.Vector3(0, size, 0),
       new BABYLON.Vector3(0.05 * size, size * 0.95, 0),
     ],
-    game.scene,
+    scene,
   );
   axisY.color = new BABYLON.Color3(0, 1, 0);
 
@@ -52,7 +46,7 @@ export const enableDeveloperTools = (game: Game) => {
       new BABYLON.Vector3(0, 0, size),
       new BABYLON.Vector3(0, 0.05 * size, size * 0.95),
     ],
-    game.scene,
+    scene,
   );
   axisZ.color = new BABYLON.Color3(0, 0, 1);
 
@@ -63,7 +57,7 @@ export const enableDeveloperTools = (game: Game) => {
 
   window.addEventListener('keydown', (event: KeyboardEvent) => {
     if (event.which === 80) {
-      game.scene.debugLayer.isVisible() ? game.scene.debugLayer.hide() : game.scene.debugLayer.show(debugLayerConfig);
+      scene.debugLayer.isVisible() ? scene.debugLayer.hide() : scene.debugLayer.show(debugLayerConfig);
     }
   });
 };

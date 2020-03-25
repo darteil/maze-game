@@ -11,9 +11,9 @@ export default class FollowCamera {
   }
 
   public setTarget(target: BABYLON.Mesh) {
-    this.camera.position.x = target.position.x + 80;
-    this.camera.position.y = target.position.y + 80;
-    this.camera.position.z = target.position.z + 80;
+    this.camera.position.x = target.position.x + 70;
+    this.camera.position.y = target.position.y + 100;
+    this.camera.position.z = target.position.z + 70;
 
     this.camera.setTarget(target.getAbsolutePosition());
   }

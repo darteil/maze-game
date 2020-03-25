@@ -1,17 +1,23 @@
 import * as BABYLON from 'babylonjs';
 
-export const createScene = function(canvas: HTMLCanvasElement, engine: BABYLON.Engine) {
-  const scene = new BABYLON.Scene(engine);
+export default class SceneInstance {
+  public scene: BABYLON.Scene;
+  public directionalLight: BABYLON.DirectionalLight;
+  public hemisphericLight: BABYLON.HemisphericLight;
+  public shadowGenerator: BABYLON.ShadowGenerator;
 
-  const light1 = new BABYLON.HemisphericLight('hemisphericLight', new BABYLON.Vector3(10, 10, 0), scene);
-  // const light2 = new BABYLON.PointLight('pointLight', new BABYLON.Vector3(0, 10, -10), scene);
-  // const light3 = new BABYLON.DirectionalLight('directLight', new BABYLON.Vector3(-10, -10, -10), scene);
+  constructor(engine: BABYLON.Engine) {
+    this.scene = new BABYLON.Scene(engine);
+    this.hemisphericLight = new BABYLON.HemisphericLight('HemisphericLight', new BABYLON.Vector3(0, 1, 0), this.scene);
+    this.hemisphericLight.intensity = 0.75;
+    this.directionalLight = new BABYLON.DirectionalLight(
+      'DirectionalLight_01',
+      new BABYLON.Vector3(-200, -200, -200),
+      this.scene,
+    );
+    this.shadowGenerator = new BABYLON.ShadowGenerator(1024, this.directionalLight);
 
-  // light3.position.set(20, 20, 20);
-
-  // const postProcess = new BABYLON.FxaaPostProcess('fxaa', 1.0, camera);
-
-  scene.ambientColor = new BABYLON.Color3(0.3, 0.3, 0.3);
-
-  return scene;
-};
+    // this.shadowGenerator.useExponentialShadowMap = true;
+    // this.shadowGenerator.blurKernel = 32;
+  }
+}

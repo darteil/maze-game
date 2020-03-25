@@ -12,7 +12,7 @@ export default class LevelsGui {
     this.game = game;
     this.currentLevel = currentLevel;
     this.countOfLevels = countOfLevels;
-    this.guiTexture = GUI.AdvancedDynamicTexture.CreateFullscreenUI('UI', true, this.game.scene);
+    this.guiTexture = GUI.AdvancedDynamicTexture.CreateFullscreenUI('UI', true, this.game.sceneInstance.scene);
     this.buttons = [];
     this.render();
   }

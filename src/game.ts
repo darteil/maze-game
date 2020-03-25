@@ -1,11 +1,13 @@
 import * as BABYLON from 'babylonjs';
-import { createScene } from './scene';
+import SceneInstance from './scene';
 import { Levels, ILevel } from './levels';
 import Platform from './platform';
 import Cube from './cube';
 import FollowCamera from './camera';
 import LevelsGui from './levelsGui';
 import { createVisibilityCoordinates } from './utils';
+
+import 'babylonjs-loaders';
 
 /**
  * distance between the center of the platform and the edge = 5
@@ -41,7 +43,7 @@ const Directional = {
 };
 
 export default class Game {
-  public scene: BABYLON.Scene;
+  public sceneInstance: SceneInstance;
   public canvas: HTMLCanvasElement;
   private engine: BABYLON.Engine;
   private platforms: Map<string, Platform> = new Map();
@@ -59,9 +61,10 @@ export default class Game {
   constructor(canvas: HTMLCanvasElement) {
     this.canvas = canvas;
     this.engine = new BABYLON.Engine(this.canvas, true);
-    this.scene = createScene(this.canvas, this.engine);
-    this.cube = new Cube(this.scene);
-    this.camera = new FollowCamera(this.scene);
+    this.sceneInstance = new SceneInstance(this.engine);
+    this.cube = new Cube(this.sceneInstance.scene);
+    this.camera = new FollowCamera(this.sceneInstance.scene);
+
     this.gameState = {
       moving: false,
     };
@@ -73,10 +76,12 @@ export default class Game {
     this.initControl();
     this.render();
     this.start();
+
+    // BABYLON.SceneLoader.Append('', 'demo.glb', this.scene);
   }
 
   private start() {
-    this.startNewLevel(this.currentLevel);
+    this.createMap(Levels[this.currentLevel]);
     if (this.startPlatform)
       this.cube.setPosition(this.startPlatform.mesh.position.x, 9, this.startPlatform.mesh.position.z);
     this.camera.setTarget(this.cube.mesh);
@@ -85,17 +90,17 @@ export default class Game {
 
   public restart() {
     this.platforms.forEach((platform: Platform) => {
-      this.scene.removeMesh(platform.mesh);
+      this.sceneInstance.scene.removeMesh(platform.mesh);
       platform.material.dispose();
     });
     this.platforms.clear();
     if (this.startPlatform) {
-      this.scene.removeMesh(this.startPlatform.mesh);
+      this.sceneInstance.scene.removeMesh(this.startPlatform.mesh);
       this.startPlatform.material.dispose();
       this.startPlatform = null;
     }
     if (this.finishPlatform) {
-      this.scene.removeMesh(this.finishPlatform.mesh);
+      this.sceneInstance.scene.removeMesh(this.finishPlatform.mesh);
       this.finishPlatform.material.dispose();
       this.finishPlatform = null;
     }
@@ -104,10 +109,6 @@ export default class Game {
     };
     this.levelGui.setCurrentLevel(this.currentLevel);
     this.start();
-  }
-
-  private startNewLevel(numberOfLevel: number) {
-    this.createMap(Levels[numberOfLevel]);
   }
 
   private createMap(level: ILevel) {
@@ -123,23 +124,26 @@ export default class Game {
         if (j > 0) currentZCoordinate += 12;
 
         if (map[i][j] === 'z') {
-          const platform = new Platform(this.scene);
+          const platform = new Platform(this.sceneInstance.scene);
           platform.setPosition(currentXCoordinate, -8, currentZCoordinate);
+          platform.setColor(new BABYLON.Color3(1.0, 0.766, 0.336));
 
           this.platforms.set(`x: ${currentXCoordinate}, z: ${currentZCoordinate}`, platform);
         }
 
         if (map[i][j] === 's') {
-          const platform = new Platform(this.scene);
+          const platform = new Platform(this.sceneInstance.scene);
           platform.setPosition(currentXCoordinate, -8, currentZCoordinate);
+          platform.setColor(new BABYLON.Color3(0.7, 1, 0));
           platform.show();
 
           this.startPlatform = platform;
         }
 
         if (map[i][j] === 'f') {
-          const platform = new Platform(this.scene);
+          const platform = new Platform(this.sceneInstance.scene);
           platform.setPosition(currentXCoordinate, -8, currentZCoordinate);
+          platform.setColor(new BABYLON.Color3(0.3, 0.8, 1));
           platform.show();
 
           this.finishPlatform = platform;
@@ -257,7 +261,7 @@ export default class Game {
 
   private render() {
     this.engine.runRenderLoop(() => {
-      this.scene.render();
+      this.sceneInstance.scene.render();
     });
 
     window.addEventListener('resize', () => {
