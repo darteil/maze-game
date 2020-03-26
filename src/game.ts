@@ -80,6 +80,15 @@ export default class Game {
     // BABYLON.SceneLoader.Append('', 'demo.glb', this.scene);
   }
 
+  private addToShadowGenerator(mesh: BABYLON.Mesh) {
+    const shadowMap = this.sceneInstance.shadowGenerator.getShadowMap();
+
+    if (shadowMap && shadowMap.renderList) {
+      shadowMap.renderList.push(mesh);
+    }
+    // this.sceneInstance.shadowGenerator.addShadowCaster(mesh);
+  }
+
   private start() {
     this.createMap(Levels[this.currentLevel]);
     if (this.startPlatform)
@@ -129,6 +138,7 @@ export default class Game {
           platform.setColor(new BABYLON.Color3(1.0, 0.766, 0.336));
 
           this.platforms.set(`x: ${currentXCoordinate}, z: ${currentZCoordinate}`, platform);
+          this.addToShadowGenerator(platform.mesh);
         }
 
         if (map[i][j] === 's') {
@@ -136,6 +146,7 @@ export default class Game {
           platform.setPosition(currentXCoordinate, -8, currentZCoordinate);
           platform.setColor(new BABYLON.Color3(0.7, 1, 0));
           platform.show();
+          this.addToShadowGenerator(platform.mesh);
 
           this.startPlatform = platform;
         }
@@ -145,6 +156,7 @@ export default class Game {
           platform.setPosition(currentXCoordinate, -8, currentZCoordinate);
           platform.setColor(new BABYLON.Color3(0.3, 0.8, 1));
           platform.show();
+          this.addToShadowGenerator(platform.mesh);
 
           this.finishPlatform = platform;
         }

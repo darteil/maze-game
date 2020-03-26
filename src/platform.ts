@@ -1,4 +1,5 @@
 import * as BABYLON from 'babylonjs';
+import { Color3 } from 'babylonjs';
 
 export default class Platform {
   public scene: BABYLON.Scene;
@@ -10,17 +11,19 @@ export default class Platform {
   constructor(scene: BABYLON.Scene) {
     this.scene = scene;
     this.mesh = BABYLON.MeshBuilder.CreateBox('platform', { width: 10, height: 4, depth: 10 }, scene);
+    this.mesh.receiveShadows = true;
 
-    this.material = new BABYLON.StandardMaterial('cube_material', scene);
-
-    // material.diffuseColor = new BABYLON.Color3(1, 0, 1);
-    // material.specularColor = new BABYLON.Color3(0.5, 0.6, 0.87);
-    // material.emissiveColor = new BABYLON.Color3(1, 1, 1);
-    // material.ambientColor = new BABYLON.Color3(0.23, 0.98, 0.53);
+    this.material = new BABYLON.StandardMaterial('default_platform', scene);
 
     this.material.alpha = 0.0;
-
+    this.material.diffuseColor = new BABYLON.Color3(1.0, 0.766, 0.336);
+    // this.material.glossiness = 0.0;
+    // this.material.microSurface = 1;
     this.mesh.material = this.material;
+  }
+
+  public setColor(color: Color3) {
+    this.material.diffuseColor = color;
   }
 
   public setPosition(x: number, y: number, z: number) {
@@ -95,18 +98,54 @@ export default class Platform {
 
     animationTransparent.setKeys(keys);
 
-    return [animationMove, animationTransparent];
+    keys = [];
+
+    const animationGlossiness = new BABYLON.Animation(
+      'animation',
+      'material.glossiness',
+      60,
+      BABYLON.Animation.ANIMATIONTYPE_FLOAT,
+      BABYLON.Animation.ANIMATIONLOOPMODE_CONSTANT,
+    );
+
+    if (type === 'hide') {
+      keys.push({
+        frame: 0,
+        value: 0.4,
+      });
+
+      keys.push({
+        frame: 100,
+        value: 1.0,
+      });
+    }
+
+    if (type === 'show') {
+      keys.push({
+        frame: 0,
+        value: 1.0,
+      });
+
+      keys.push({
+        frame: 100,
+        value: 0.4,
+      });
+    }
+
+    animationGlossiness.setKeys(keys);
+
+    return [animationMove, animationTransparent, animationGlossiness];
   }
 
   hide() {
     const animation = this.createAnimation('hide');
-    this.scene.beginDirectAnimation(this.mesh, [animation[0], animation[1]], 0, 100, false, 5);
+    this.scene.beginDirectAnimation(this.mesh, [animation[0], animation[1]], 0, 100, false, 4);
     this.isVisible = false;
   }
 
   show() {
     const animation = this.createAnimation('show');
-    this.scene.beginDirectAnimation(this.mesh, [animation[0], animation[1]], 0, 100, false, 5);
+    this.scene.beginDirectAnimation(this.mesh, [animation[0], animation[1]], 0, 100, false, 4);
     this.isVisible = true;
   }
 }

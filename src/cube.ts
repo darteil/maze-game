@@ -3,10 +3,16 @@ import * as BABYLON from 'babylonjs';
 export default class Cube {
   scene: BABYLON.Scene;
   mesh: BABYLON.Mesh;
+  material: BABYLON.StandardMaterial;
 
   constructor(scene: BABYLON.Scene) {
     this.scene = scene;
     this.mesh = BABYLON.MeshBuilder.CreateBox('cube', { width: 10, height: 10, depth: 10 }, scene);
+    this.material = new BABYLON.StandardMaterial('cube', scene);
+
+    this.material.specularColor = new BABYLON.Color3(0, 0, 0);
+    this.mesh.material = this.material;
+    // this.mesh.receiveShadows = true;
   }
 
   public setPosition(x: number, y: number, z: number) {
