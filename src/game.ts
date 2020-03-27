@@ -1,10 +1,12 @@
 import * as BABYLON from 'babylonjs';
 import SceneInstance from './scene';
 import { Levels, ILevel } from './levels';
-import Platform from './platform';
-import Cube from './cube';
+import Platform from './objects/platform';
+import Cube from './objects/cube';
+import Ground from './objects/ground';
 import FollowCamera from './camera';
 import LevelsGui from './levelsGui';
+import TrainingGui from './trainingGui';
 import { createVisibilityCoordinates } from './utils';
 
 import 'babylonjs-loaders';
@@ -47,47 +49,49 @@ export default class Game {
   public canvas: HTMLCanvasElement;
   private engine: BABYLON.Engine;
   private platforms: Map<string, Platform> = new Map();
-  private startPlatform: Platform | null = null;
-  private finishPlatform: Platform | null = null;
+  public startPlatform: Platform | null = null;
+  public finishPlatform: Platform | null = null;
 
   public currentLevel: number = 0;
 
   public cube: Cube;
   private camera: FollowCamera;
   private gameState: IGameState;
+  private ground: Ground;
 
-  private levelGui: LevelsGui;
+  // private levelGui: LevelsGui;
+  private trainingGui: TrainingGui;
 
   constructor(canvas: HTMLCanvasElement) {
     this.canvas = canvas;
     this.engine = new BABYLON.Engine(this.canvas, true);
     this.sceneInstance = new SceneInstance(this.engine);
     this.cube = new Cube(this.sceneInstance.scene);
+    this.ground = new Ground(this.sceneInstance.scene);
     this.camera = new FollowCamera(this.sceneInstance.scene);
 
     this.gameState = {
       moving: false,
     };
 
-    this.levelGui = new LevelsGui(this, Levels.length, this.currentLevel);
+    // this.levelGui = new LevelsGui(this, Levels.length, this.currentLevel);
+    this.trainingGui = new TrainingGui(this);
   }
 
   public init() {
     this.initControl();
     this.render();
     this.start();
-
-    // BABYLON.SceneLoader.Append('', 'demo.glb', this.scene);
+    this.trainingGui.render();
   }
 
-  private addToShadowGenerator(mesh: BABYLON.Mesh) {
+  /*private addToShadowGenerator(mesh: BABYLON.Mesh) {
     const shadowMap = this.sceneInstance.shadowGenerator.getShadowMap();
 
     if (shadowMap && shadowMap.renderList) {
       shadowMap.renderList.push(mesh);
     }
-    // this.sceneInstance.shadowGenerator.addShadowCaster(mesh);
-  }
+  }*/
 
   private start() {
     this.createMap(Levels[this.currentLevel]);
@@ -116,7 +120,7 @@ export default class Game {
     this.gameState = {
       moving: false,
     };
-    this.levelGui.setCurrentLevel(this.currentLevel);
+    // this.levelGui.setCurrentLevel(this.currentLevel);
     this.start();
   }
 
@@ -138,7 +142,6 @@ export default class Game {
           platform.setColor(new BABYLON.Color3(1.0, 0.766, 0.336));
 
           this.platforms.set(`x: ${currentXCoordinate}, z: ${currentZCoordinate}`, platform);
-          this.addToShadowGenerator(platform.mesh);
         }
 
         if (map[i][j] === 's') {
@@ -146,7 +149,6 @@ export default class Game {
           platform.setPosition(currentXCoordinate, -8, currentZCoordinate);
           platform.setColor(new BABYLON.Color3(0.7, 1, 0));
           platform.show();
-          this.addToShadowGenerator(platform.mesh);
 
           this.startPlatform = platform;
         }
@@ -156,7 +158,6 @@ export default class Game {
           platform.setPosition(currentXCoordinate, -8, currentZCoordinate);
           platform.setColor(new BABYLON.Color3(0.3, 0.8, 1));
           platform.show();
-          this.addToShadowGenerator(platform.mesh);
 
           this.finishPlatform = platform;
         }
@@ -187,8 +188,11 @@ export default class Game {
   }
 
   private cubeCorrectPositionCheck(): boolean {
+    if (!this.startPlatform) return false;
     const currentPosition = `x: ${this.cube.mesh.position.x}, z: ${this.cube.mesh.position.z}`;
-    return this.platforms.has(currentPosition);
+    const startPlatformPosition = `x: ${this.startPlatform.mesh.position.x}, z: ${this.startPlatform.mesh.position.z}`;
+
+    return this.platforms.has(currentPosition) || currentPosition === startPlatformPosition;
   }
 
   private cubeFinishPositionCheck(): boolean {
