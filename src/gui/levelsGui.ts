@@ -1,5 +1,5 @@
 import * as GUI from 'babylonjs-gui';
-import Game from './game';
+import Game from '../game';
 
 export default class LevelsGui {
   public game: Game;
@@ -12,7 +12,7 @@ export default class LevelsGui {
     this.game = game;
     this.currentLevel = currentLevel;
     this.countOfLevels = countOfLevels;
-    this.guiTexture = GUI.AdvancedDynamicTexture.CreateFullscreenUI('UI', true, this.game.sceneInstance.scene);
+    this.guiTexture = GUI.AdvancedDynamicTexture.CreateFullscreenUI('Levels_UI', true, this.game.sceneInstance.scene);
     this.buttons = [];
     this.render();
   }
@@ -44,7 +44,8 @@ export default class LevelsGui {
 
       button.onPointerDownObservable.add(() => {
         this.game.currentLevel = i;
-        this.game.restart();
+        this.game.clear();
+        this.game.start();
       });
       this.buttons.push(button);
       this.guiTexture.addControl(button);

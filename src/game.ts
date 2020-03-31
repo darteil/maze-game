@@ -1,12 +1,12 @@
 import * as BABYLON from 'babylonjs';
 import SceneInstance from './scene';
-import { Levels, ILevel } from './levels';
+import { Levels, trainingLevel, ILevel } from './levels';
 import Platform from './objects/platform';
 import Cube from './objects/cube';
 import Ground from './objects/ground';
 import FollowCamera from './camera';
-import LevelsGui from './levelsGui';
-import TrainingGui from './trainingGui';
+import LevelsGui from './gui/levelsGui';
+import TrainingGui from './gui/trainingGui';
 import { createVisibilityCoordinates } from './utils';
 
 import 'babylonjs-loaders';
@@ -21,23 +21,10 @@ import 'babylonjs-loaders';
 
 interface IGameState {
   moving: boolean;
+  firstRun?: boolean;
 }
 
-/*const Directional = {
-  up: 75,
-  left: 72,
-  right: 76,
-  down: 74,
-};*/
-
-/*const Directional = {
-  up: 38,
-  left: 37,
-  right: 39,
-  down: 40,
-};*/
-
-const Directional = {
+const Controls = {
   up: 87,
   left: 65,
   right: 68,
@@ -55,12 +42,12 @@ export default class Game {
   public currentLevel: number = 0;
 
   public cube: Cube;
-  private camera: FollowCamera;
+  private followCamera: FollowCamera;
   private gameState: IGameState;
   private ground: Ground;
 
-  // private levelGui: LevelsGui;
-  private trainingGui: TrainingGui;
+  private levelsGui: LevelsGui | null = null;
+  private trainingGui: TrainingGui | null = null;
 
   constructor(canvas: HTMLCanvasElement) {
     this.canvas = canvas;
@@ -68,21 +55,29 @@ export default class Game {
     this.sceneInstance = new SceneInstance(this.engine);
     this.cube = new Cube(this.sceneInstance.scene);
     this.ground = new Ground(this.sceneInstance.scene);
-    this.camera = new FollowCamera(this.sceneInstance.scene);
+    this.followCamera = new FollowCamera(this.sceneInstance.scene);
+
+    if (!localStorage.getItem('maze_game_first_run')) {
+      localStorage.setItem('maze_game_first_run', 'yes');
+    }
 
     this.gameState = {
       moving: false,
+      firstRun: localStorage.getItem('maze_game_first_run') === 'yes',
     };
 
-    // this.levelGui = new LevelsGui(this, Levels.length, this.currentLevel);
-    this.trainingGui = new TrainingGui(this);
+    if (!this.gameState.firstRun) {
+      this.levelsGui = new LevelsGui(this, Levels.length, this.currentLevel);
+    }
+    if (this.gameState.firstRun) {
+      this.trainingGui = new TrainingGui(this);
+    }
   }
 
   public init() {
     this.initControl();
     this.render();
     this.start();
-    this.trainingGui.render();
   }
 
   /*private addToShadowGenerator(mesh: BABYLON.Mesh) {
@@ -93,15 +88,33 @@ export default class Game {
     }
   }*/
 
-  private start() {
-    this.createMap(Levels[this.currentLevel]);
+  public start() {
+    if (this.gameState.firstRun) {
+      this.createMap(trainingLevel);
+      this.trainingGui?.render();
+    } else {
+      this.createMap(Levels[this.currentLevel]);
+    }
     if (this.startPlatform)
       this.cube.setPosition(this.startPlatform.mesh.position.x, 9, this.startPlatform.mesh.position.z);
-    this.camera.setTarget(this.cube.mesh);
+    this.followCamera.setTarget(this.cube.mesh);
     this.updateRoad();
   }
 
-  public restart() {
+  private closeTrainingMap() {
+    localStorage.setItem('maze_game_first_run', 'no');
+
+    this.gameState = {
+      ...this.gameState,
+      firstRun: false,
+    };
+
+    this.trainingGui?.disable();
+    this.trainingGui?.dispose();
+    this.levelsGui = new LevelsGui(this, Levels.length, this.currentLevel);
+  }
+
+  public clear() {
     this.platforms.forEach((platform: Platform) => {
       this.sceneInstance.scene.removeMesh(platform.mesh);
       platform.material.dispose();
@@ -118,10 +131,12 @@ export default class Game {
       this.finishPlatform = null;
     }
     this.gameState = {
+      ...this.gameState,
       moving: false,
     };
-    // this.levelGui.setCurrentLevel(this.currentLevel);
-    this.start();
+    if (this.levelsGui) {
+      this.levelsGui.setCurrentLevel(this.currentLevel);
+    }
   }
 
   private createMap(level: ILevel) {
@@ -206,44 +221,63 @@ export default class Game {
 
   private cubeMovingCheck() {
     if (!this.cubeCorrectPositionCheck() && !this.cubeFinishPositionCheck()) {
-      this.restart();
+      this.clear();
+      this.start();
+      return;
     }
+
     if (this.cubeFinishPositionCheck()) {
+      if (this.gameState.firstRun) {
+        this.clear();
+        this.closeTrainingMap();
+        this.start();
+        return;
+      }
       if (this.currentLevel === Levels.length - 1) {
-        this.restart();
+        this.clear();
+        this.start();
+        return;
       } else {
         this.currentLevel += 1;
-        this.restart();
+        this.clear();
+        this.start();
+        return;
       }
     }
     this.updateRoad();
   }
 
-  private async moveAction(directional: string) {
+  private async moveAction(Controls: string) {
     if (this.gameState.moving) return;
     this.gameState.moving = true;
 
-    switch (directional) {
+    if (Controls === 'up' || Controls === 'down' || Controls === 'left' || Controls === 'right') {
+      if (this.gameState.firstRun) {
+        this.trainingGui?.disable();
+      }
+    }
+
+    switch (Controls) {
       case 'up': {
-        await Promise.all([this.cube.moveUp(), this.camera.moveUp()]);
+        await Promise.all([this.cube.moveUp(), this.followCamera.moveUp()]);
         this.cubeMovingCheck();
         this.gameState.moving = false;
         break;
       }
       case 'down': {
-        await Promise.all([this.cube.moveDown(), this.camera.moveDown()]);
+        await Promise.all([this.cube.moveDown(), this.followCamera.moveDown()]);
         this.cubeMovingCheck();
         this.gameState.moving = false;
         break;
       }
       case 'left': {
-        await Promise.all([this.cube.moveLeft(), this.camera.moveLeft()]);
+        await Promise.all([this.cube.moveLeft(), this.followCamera.moveLeft()]);
         this.cubeMovingCheck();
         this.gameState.moving = false;
         break;
       }
       case 'right': {
-        await Promise.all([this.cube.moveRight(), this.camera.moveRight()]);
+        await Promise.all([this.cube.moveRight(), this.followCamera.moveRight()]);
         this.cubeMovingCheck();
         this.gameState.moving = false;
         break;
@@ -257,19 +291,19 @@ export default class Game {
     window.addEventListener('keydown', (event: KeyboardEvent) => {
       const key = event.which;
 
-      if (Directional.up === key) {
+      if (Controls.up === key) {
         this.moveAction('up');
       }
 
-      if (Directional.down === key) {
+      if (Controls.down === key) {
         this.moveAction('down');
       }
 
-      if (Directional.left === key) {
+      if (Controls.left === key) {
         this.moveAction('left');
       }
 
-      if (Directional.right === key) {
+      if (Controls.right === key) {
         this.moveAction('right');
       }
     });
