@@ -75,9 +75,14 @@ export default class Game {
   }
 
   public init() {
+    this.enablePostProcess();
     this.initControl();
     this.render();
     this.start();
+  }
+
+  public enablePostProcess() {
+    let fxaaPostProcess = new BABYLON.FxaaPostProcess('fxaa', 2.0, this.sceneInstance.scene.activeCamera);
   }
 
   /*private addToShadowGenerator(mesh: BABYLON.Mesh) {
