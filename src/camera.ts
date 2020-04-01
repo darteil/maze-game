@@ -18,6 +18,10 @@ export default class FollowCamera {
     this.camera.setTarget(target.getAbsolutePosition());
   }
 
+  /**
+   * Create moving animation
+   * @param directional Options: 'up', 'down', 'left', 'right'
+   */
   private createMoveAnimation(directional: string) {
     const keys = [];
 

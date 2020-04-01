@@ -29,6 +29,10 @@ export default class Platform {
     this.mesh.position.set(x, y, z);
   }
 
+  /**
+   * Create moving animation
+   * @param type Options: 'hide', 'show'
+   */
   private createAnimation(type: string) {
     let keys = [];
 
@@ -102,13 +106,13 @@ export default class Platform {
 
   hide() {
     const animation = this.createAnimation('hide');
-    this.scene.beginDirectAnimation(this.mesh, [animation[0], animation[1]], 0, 100, false, 5);
+    this.scene.beginDirectAnimation(this.mesh, [...animation], 0, 100, false, 5);
     this.isVisible = false;
   }
 
   show() {
     const animation = this.createAnimation('show');
-    this.scene.beginDirectAnimation(this.mesh, [animation[0], animation[1]], 0, 100, false, 5);
+    this.scene.beginDirectAnimation(this.mesh, [...animation], 0, 100, false, 5);
     this.isVisible = true;
   }
 }

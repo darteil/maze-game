@@ -33,6 +33,7 @@ export default class LevelsGui {
       button.width = '40px';
       button.height = '40px';
       button.thickness = 2;
+      button.hoverCursor = 'pointer';
       button.background = '#2c2c2c';
       if (i === this.currentLevel) {
         button.color = '#e7a044';

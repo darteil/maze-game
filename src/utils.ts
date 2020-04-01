@@ -55,6 +55,9 @@ export const enableDeveloperTools = (game: Game) => {
     enablePopup: false,
   };
 
+  /**
+   * Press 'p' to show debugLayer
+   */
   window.addEventListener('keydown', (event: KeyboardEvent) => {
     if (event.which === 80) {
       scene.debugLayer.isVisible() ? scene.debugLayer.hide() : scene.debugLayer.show(debugLayerConfig);
@@ -62,6 +65,12 @@ export const enableDeveloperTools = (game: Game) => {
   });
 };
 
+/**
+ * Object visibility coordinates
+ * @param x position of the object
+ * @param z position of the object
+ * @param step distance to the center of the neighboring object
+ */
 export const createVisibilityCoordinates = (x: number, z: number, step: number): string[] => {
   const visibility = 2;
 

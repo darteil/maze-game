@@ -117,8 +117,6 @@ export default class TrainingGui {
   }
 
   public render() {
-    console.log('render');
-
     this.renderStartLabel();
     this.renderFinishLabel();
     this.renderControlHelp();

@@ -9,7 +9,7 @@ import LevelsGui from './gui/levelsGui';
 import TrainingGui from './gui/trainingGui';
 import { createVisibilityCoordinates } from './utils';
 
-import 'babylonjs-loaders';
+// import 'babylonjs-loaders';
 
 /**
  * distance between the center of the platform and the edge = 5
@@ -17,6 +17,7 @@ import 'babylonjs-loaders';
  *
  * then distance between centers of the two platforms is equal 5 + 5 + 2 = 12
  * starting position of the platform along the Y axis = -8
+ * starting position of the cube along the Y axis = 9
  */
 
 interface IGameState {
@@ -82,7 +83,7 @@ export default class Game {
   }
 
   public enablePostProcess() {
-    let fxaaPostProcess = new BABYLON.FxaaPostProcess('fxaa', 2.0, this.sceneInstance.scene.activeCamera);
+    const fxaaPostProcess = new BABYLON.FxaaPostProcess('fxaa', 2.0, this.sceneInstance.scene.activeCamera);
   }
 
   /*private addToShadowGenerator(mesh: BABYLON.Mesh) {
@@ -156,6 +157,7 @@ export default class Game {
       for (let j = 0; j < level.height; j++) {
         if (j > 0) currentZCoordinate += 12;
 
+        // default platform
         if (map[i][j] === 'z') {
           const platform = new Platform(this.sceneInstance.scene);
           platform.setPosition(currentXCoordinate, -8, currentZCoordinate);
@@ -164,6 +166,7 @@ export default class Game {
           this.platforms.set(`x: ${currentXCoordinate}, z: ${currentZCoordinate}`, platform);
         }
 
+        // start platform
         if (map[i][j] === 's') {
           const platform = new Platform(this.sceneInstance.scene);
           platform.setPosition(currentXCoordinate, -8, currentZCoordinate);
@@ -173,6 +176,7 @@ export default class Game {
           this.startPlatform = platform;
         }
 
+        // finish platform
         if (map[i][j] === 'f') {
           const platform = new Platform(this.sceneInstance.scene);
           platform.setPosition(currentXCoordinate, -8, currentZCoordinate);
@@ -257,17 +261,21 @@ export default class Game {
     this.updateRoad();
   }
 
-  private async moveAction(Controls: string) {
+  /**
+   * Cube movement
+   * @param directional Options: 'up', 'down', 'left', 'right'
+   */
+  private async moveAction(directional: string) {
     if (this.gameState.moving) return;
     this.gameState.moving = true;
 
-    if (Controls === 'up' || Controls === 'down' || Controls === 'left' || Controls === 'right') {
+    if (directional === 'up' || directional === 'down' || directional === 'left' || directional === 'right') {
       if (this.gameState.firstRun) {
         this.trainingGui?.disable();
       }
     }
 
-    switch (Controls) {
+    switch (directional) {
       case 'up': {
         await Promise.all([this.cube.moveUp(), this.followCamera.moveUp()]);
         this.cubeMovingCheck();
