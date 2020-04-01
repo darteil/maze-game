@@ -177,7 +177,12 @@ export default class Game {
           const platform = new Platform(this.sceneInstance.scene);
           platform.setPosition(currentXCoordinate, -8, currentZCoordinate);
           platform.setColor(new BABYLON.Color3(0.3, 0.8, 1));
-          platform.show();
+
+          if (this.gameState.firstRun) {
+            platform.show();
+          } else {
+            this.platforms.set(`x: ${currentXCoordinate}, z: ${currentZCoordinate}`, platform);
+          }
 
           this.finishPlatform = platform;
         }

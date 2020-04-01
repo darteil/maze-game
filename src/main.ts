@@ -7,4 +7,4 @@ const game = new Game(canvas);
 
 game.init();
 
-enableDeveloperTools(game);
+// enableDeveloperTools(game);
