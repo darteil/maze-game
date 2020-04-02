@@ -12,7 +12,7 @@ const distPath = path.resolve(__dirname, '../dist');
 const publicPathFolder = path.resolve(__dirname, '../public');
 
 module.exports = (env, argv) => {
-  let publicPath = '';
+  let publicPath = '/maze-game';
 
   return merge(base(env, argv), {
     stats: 'errors-only',
