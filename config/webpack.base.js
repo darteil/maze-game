@@ -10,12 +10,12 @@ module.exports = (env, argv) => {
   return {
     entry: indexFilePath,
     resolve: {
-      extensions: ['.ts', '.tsx', '.js'],
+      extensions: ['.ts', '.js'],
     },
     module: {
       rules: [
         {
-          test: /\.(ts|tsx|js)$/,
+          test: /\.(ts|js)$/,
           exclude: /(node_modules)/,
           use: [
             {
