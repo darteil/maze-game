@@ -9,8 +9,6 @@ import LevelsGui from './gui/levelsGui';
 import TrainingGui from './gui/trainingGui';
 import { createVisibilityCoordinates } from './utils';
 
-// import 'babylonjs-loaders';
-
 /**
  * distance between the center of the platform and the edge = 5
  * distance between platforms = 2
