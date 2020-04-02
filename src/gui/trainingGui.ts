@@ -123,7 +123,7 @@ export default class TrainingGui {
   }
 
   public disable() {
-    this.controls.forEach(control => {
+    this.controls.forEach((control) => {
       control.dispose();
     });
     this.controls.clear();

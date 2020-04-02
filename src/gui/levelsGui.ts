@@ -55,7 +55,7 @@ export default class LevelsGui {
   }
 
   private update() {
-    this.buttons.forEach(button => {
+    this.buttons.forEach((button) => {
       this.guiTexture.removeControl(button);
     });
     this.buttons = [];
