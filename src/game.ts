@@ -7,6 +7,7 @@ import Ground from './objects/ground';
 import FollowCamera from './camera';
 import LevelsGui from './gui/levelsGui';
 import TrainingGui from './gui/trainingGui';
+import MiniMap from './miniMap';
 import { createVisibilityCoordinates } from './utils';
 
 /**
@@ -48,6 +49,8 @@ export default class Game {
   private levelsGui: LevelsGui | null = null;
   private trainingGui: TrainingGui | null = null;
 
+  private miniMap: MiniMap;
+
   constructor(canvas: HTMLCanvasElement) {
     this.canvas = canvas;
     this.engine = new BABYLON.Engine(this.canvas, true);
@@ -55,6 +58,7 @@ export default class Game {
     this.cube = new Cube(this.sceneInstance.scene);
     this.ground = new Ground(this.sceneInstance.scene);
     this.followCamera = new FollowCamera(this.sceneInstance.scene);
+    this.miniMap = new MiniMap();
 
     if (!localStorage.getItem('maze_game_first_run')) {
       localStorage.setItem('maze_game_first_run', 'yes');
@@ -77,6 +81,7 @@ export default class Game {
     this.enablePostProcess();
     this.initControl();
     this.render();
+    this.initMiniMap();
     this.start();
   }
 
@@ -160,6 +165,7 @@ export default class Game {
           const platform = new Platform(this.sceneInstance.scene);
           platform.setPosition(currentXCoordinate, -8, currentZCoordinate);
           platform.setColor(new BABYLON.Color3(1.0, 0.766, 0.336));
+          platform.set2dCoordinate(i, j);
 
           this.platforms.set(`x: ${currentXCoordinate}, z: ${currentZCoordinate}`, platform);
         }
@@ -169,6 +175,7 @@ export default class Game {
           const platform = new Platform(this.sceneInstance.scene);
           platform.setPosition(currentXCoordinate, -8, currentZCoordinate);
           platform.setColor(new BABYLON.Color3(0.7, 1, 0));
+          platform.set2dCoordinate(i, j);
           platform.show();
 
           this.startPlatform = platform;
@@ -179,6 +186,7 @@ export default class Game {
           const platform = new Platform(this.sceneInstance.scene);
           platform.setPosition(currentXCoordinate, -8, currentZCoordinate);
           platform.setColor(new BABYLON.Color3(0.3, 0.8, 1));
+          platform.set2dCoordinate(i, j);
 
           if (this.gameState.firstRun) {
             platform.show();
@@ -212,6 +220,8 @@ export default class Game {
         value.hide();
       }
     });
+
+    // this.miniMap.update(this.platforms);
   }
 
   private cubeCorrectPositionCheck(): boolean {
@@ -257,6 +267,7 @@ export default class Game {
       }
     }
     this.updateRoad();
+    this.miniMap.update(this.platforms);
   }
 
   /**
@@ -321,6 +332,14 @@ export default class Game {
 
       if (Controls.right === key) {
         this.moveAction('right');
+      }
+    });
+  }
+
+  private initMiniMap() {
+    window.addEventListener('keydown', (event: KeyboardEvent) => {
+      if (event.which === 77) {
+        this.miniMap.toggle();
       }
     });
   }
