@@ -1,6 +1,7 @@
 import Konva from 'konva';
 import Platform2D from './platform';
 import Platform from '../objects/platform';
+import Cube from '../objects/cube';
 
 export default class MiniMap {
   private container: HTMLDivElement;
@@ -8,7 +9,7 @@ export default class MiniMap {
   private stage: Konva.Stage;
   private mainLayer: Konva.Layer;
   private mapLayer: Konva.Layer;
-  // private startPosition:
+  private playerLayer: Konva.Layer;
   private platforms: string[];
 
   constructor() {
@@ -23,6 +24,7 @@ export default class MiniMap {
     });
     this.mainLayer = new Konva.Layer();
     this.mapLayer = new Konva.Layer();
+    this.playerLayer = new Konva.Layer();
     this.stage.hide();
 
     this.platforms = [];
@@ -43,10 +45,11 @@ export default class MiniMap {
 
     this.stage.add(this.mainLayer);
     this.stage.add(this.mapLayer);
+    this.stage.add(this.playerLayer);
   }
 
-  public update(platforms3d: Map<string, Platform>) {
-    platforms3d.forEach((platform) => {
+  public update(platforms: Map<string, Platform>, cube: Cube) {
+    platforms.forEach((platform) => {
       if (!platform.isVisible) return;
 
       let flag = true;
@@ -60,6 +63,10 @@ export default class MiniMap {
         this.mapLayer.add(rect.konvaObject);
       }
     });
+
+    this.playerLayer.removeChildren();
+    const player = new Platform2D(cube.row * 10, cube.column * 10, '#dd6e42');
+    this.playerLayer.add(player.konvaObject);
 
     this.stage.draw();
   }

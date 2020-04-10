@@ -104,8 +104,10 @@ export default class Game {
     } else {
       this.createMap(Levels[this.currentLevel]);
     }
-    if (this.startPlatform)
+    if (this.startPlatform) {
       this.cube.setPosition(this.startPlatform.mesh.position.x, 9, this.startPlatform.mesh.position.z);
+      this.cube.set2dPosition(this.startPlatform.row, this.startPlatform.column);
+    }
     this.followCamera.setTarget(this.cube.mesh);
     this.updateRoad();
   }
@@ -221,7 +223,7 @@ export default class Game {
       }
     });
 
-    // this.miniMap.update(this.platforms);
+    this.miniMap.update(this.platforms, this.cube);
   }
 
   private cubeCorrectPositionCheck(): boolean {
@@ -267,7 +269,6 @@ export default class Game {
       }
     }
     this.updateRoad();
-    this.miniMap.update(this.platforms);
   }
 
   /**

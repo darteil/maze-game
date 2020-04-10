@@ -23,9 +23,9 @@ export default class Platform {
     this.mesh.material = this.material;
   }
 
-  public set2dCoordinate(x: number, y: number) {
-    this.row = x;
-    this.column = y;
+  public set2dCoordinate(row: number, column: number) {
+    this.row = row;
+    this.column = column;
   }
 
   public setColor(color: Color3) {

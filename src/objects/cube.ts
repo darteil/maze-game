@@ -4,6 +4,8 @@ export default class Cube {
   public scene: BABYLON.Scene;
   public mesh: BABYLON.Mesh;
   public material: BABYLON.StandardMaterial;
+  public row = 0;
+  public column = 0;
 
   constructor(scene: BABYLON.Scene) {
     this.scene = scene;
@@ -16,6 +18,11 @@ export default class Cube {
 
   public setPosition(x: number, y: number, z: number) {
     this.mesh.position.set(x, y, z);
+  }
+
+  public set2dPosition(row: number, column: number) {
+    this.row = row;
+    this.column = column;
   }
 
   /**
@@ -77,6 +84,7 @@ export default class Cube {
   }
 
   public moveUp() {
+    this.column -= 1;
     const promise = new Promise((resolve, reject) => {
       this.scene.beginDirectAnimation(this.mesh, [this.createMoveAnimation('up')], 0, 100, false, 5, () => {
         resolve('done');
@@ -86,6 +94,7 @@ export default class Cube {
   }
 
   public moveDown() {
+    this.column += 1;
     const promise = new Promise((resolve, reject) => {
       this.scene.beginDirectAnimation(this.mesh, [this.createMoveAnimation('down')], 0, 100, false, 5, () => {
         resolve('done');
@@ -95,6 +104,7 @@ export default class Cube {
   }
 
   public moveLeft() {
+    this.row += 1;
     const promise = new Promise((resolve, reject) => {
       this.scene.beginDirectAnimation(this.mesh, [this.createMoveAnimation('left')], 0, 100, false, 5, () => {
         resolve('done');
@@ -104,6 +114,7 @@ export default class Cube {
   }
 
   public moveRight() {
+    this.row -= 1;
     const promise = new Promise((resolve, reject) => {
       this.scene.beginDirectAnimation(this.mesh, [this.createMoveAnimation('right')], 0, 100, false, 5, () => {
         resolve('done');

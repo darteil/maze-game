@@ -2,18 +2,18 @@ import Konva from 'konva';
 
 export default class Platform2D {
   private color: string;
-  private x: number;
-  private y: number;
+  private row: number;
+  private column: number;
   public konvaObject: Konva.Rect;
 
-  constructor(x: number, y: number, color: string) {
+  constructor(row: number, column: number, color: string) {
     this.color = color;
-    this.x = x;
-    this.y = y;
+    this.row = row;
+    this.column = column;
 
     this.konvaObject = new Konva.Rect({
-      x: this.x,
-      y: this.y,
+      x: this.column,
+      y: this.row,
       width: 10,
       height: 10,
       fill: this.color,
