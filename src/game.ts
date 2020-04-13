@@ -148,6 +148,7 @@ export default class Game {
     if (this.levelsGui) {
       this.levelsGui.setCurrentLevel(this.currentLevel);
     }
+    this.miniMap.clear();
   }
 
   private createMap(level: ILevel) {

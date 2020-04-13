@@ -3,6 +3,11 @@ import Platform2D from './platform';
 import Platform from '../objects/platform';
 import Cube from '../objects/cube';
 
+const PLATFORM_WIDTH = 20;
+const PLATFORM_HEIGHT = 20;
+const CUBE_COLOR = '#dd6e42';
+const PLATFORM_COLOR = '#4f6d7a';
+
 export default class MiniMap {
   private container: HTMLDivElement;
   private showStatus = false;
@@ -10,7 +15,7 @@ export default class MiniMap {
   private mainLayer: Konva.Layer;
   private mapLayer: Konva.Layer;
   private playerLayer: Konva.Layer;
-  private platforms: string[];
+  private platforms: Set<string> = new Set();
 
   constructor() {
     this.container = document.createElement('div');
@@ -27,7 +32,6 @@ export default class MiniMap {
     this.playerLayer = new Konva.Layer();
     this.stage.hide();
 
-    this.platforms = [];
     this.init();
   }
 
@@ -52,22 +56,36 @@ export default class MiniMap {
     platforms.forEach((platform) => {
       if (!platform.isVisible) return;
 
-      let flag = true;
-
-      for (let i = 0; i < this.platforms.length; i++) {
-        if (`x: ${platform.row}, y: ${platform.column}` === this.platforms[i]) flag = false;
-      }
-
-      if (flag) {
-        const rect = new Platform2D(platform.row * 10, platform.column * 10, '#4f6d7a');
+      if (!this.platforms.has(`x: ${platform.row}, y: ${platform.column}`)) {
+        const rect = new Platform2D(
+          PLATFORM_WIDTH,
+          PLATFORM_HEIGHT,
+          platform.row * PLATFORM_WIDTH,
+          platform.column * PLATFORM_HEIGHT,
+          PLATFORM_COLOR,
+        );
         this.mapLayer.add(rect.konvaObject);
+        this.platforms.add(`x: ${platform.row}, y: ${platform.column}`);
       }
     });
 
     this.playerLayer.removeChildren();
-    const player = new Platform2D(cube.row * 10, cube.column * 10, '#dd6e42');
+    const player = new Platform2D(
+      PLATFORM_WIDTH,
+      PLATFORM_HEIGHT,
+      cube.row * PLATFORM_WIDTH,
+      cube.column * PLATFORM_HEIGHT,
+      CUBE_COLOR,
+    );
     this.playerLayer.add(player.konvaObject);
 
+    this.stage.draw();
+  }
+
+  public clear() {
+    this.playerLayer.removeChildren();
+    this.mapLayer.removeChildren();
+    this.platforms.clear();
     this.stage.draw();
   }
 
@@ -87,15 +105,11 @@ export default class MiniMap {
 
   public toggle() {
     if (this.showStatus) {
-      // this.container.style.display = 'none';
       this.stage.hide();
       this.showStatus = false;
     } else {
-      // this.container.style.display = 'block';
       this.stage.show();
       this.stage.draw();
-      // this.mainLayer.show();
-      // this.mainLayer.draw();
       this.showStatus = true;
     }
   }
