@@ -24,7 +24,7 @@ export default class MiniMap {
     this.initStyles();
     this.stage = new Konva.Stage({
       width: 600,
-      height: 600,
+      height: 630,
       container: this.container,
     });
     this.mainLayer = new Konva.Layer();
@@ -36,7 +36,7 @@ export default class MiniMap {
   }
 
   private init() {
-    var rect = new Konva.Rect({
+    const rect = new Konva.Rect({
       x: 0,
       y: 0,
       width: 600,
@@ -45,7 +45,46 @@ export default class MiniMap {
       stroke: '#c0d6df',
       strokeWidth: 1,
     });
+
+    const legendCubeIcon = new Konva.Rect({
+      x: 0,
+      y: 610,
+      width: 20,
+      height: 20,
+      fill: CUBE_COLOR,
+      stroke: 'black',
+      strokeWidth: 1,
+    });
+
+    const legendCubeText = new Konva.Text({
+      x: 25,
+      y: 612,
+      text: 'Cube',
+      fontSize: 18,
+    });
+
+    const legendPlatformIcon = new Konva.Rect({
+      x: 80,
+      y: 610,
+      width: 20,
+      height: 20,
+      fill: PLATFORM_COLOR,
+      stroke: 'black',
+      strokeWidth: 1,
+    });
+
+    const legendPlatformText = new Konva.Text({
+      x: 105,
+      y: 612,
+      text: 'Platform',
+      fontSize: 18,
+    });
+
     this.mainLayer.add(rect);
+    this.mainLayer.add(legendCubeIcon);
+    this.mainLayer.add(legendCubeText);
+    this.mainLayer.add(legendPlatformIcon);
+    this.mainLayer.add(legendPlatformText);
 
     this.stage.add(this.mainLayer);
     this.stage.add(this.mapLayer);
