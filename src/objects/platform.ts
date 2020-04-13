@@ -6,6 +6,8 @@ export default class Platform {
   public mesh: BABYLON.Mesh;
   public material: BABYLON.StandardMaterial;
   public isVisible = false;
+  public row = 0;
+  public column = 0;
   // showAnimation: BABYLON.Animation;
 
   constructor(scene: BABYLON.Scene) {
@@ -19,6 +21,11 @@ export default class Platform {
     // this.material.glossiness = 0.0;
     // this.material.microSurface = 1;
     this.mesh.material = this.material;
+  }
+
+  public set2dCoordinate(row: number, column: number) {
+    this.row = row;
+    this.column = column;
   }
 
   public setColor(color: Color3) {

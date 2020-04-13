@@ -93,9 +93,9 @@ export default class TrainingGui {
   private renderControlHelp() {
     const label = new GUI.Rectangle('controls help');
     label.background = 'black';
-    label.height = '100px';
+    label.height = '120px';
     label.alpha = 0.7;
-    label.width = '160px';
+    label.width = '300px';
     label.cornerRadius = 0;
     label.thickness = 1;
     label.verticalAlignment = GUI.Control.VERTICAL_ALIGNMENT_BOTTOM;
@@ -105,7 +105,7 @@ export default class TrainingGui {
     this.guiTexture.addControl(label);
 
     const labelText = new GUI.TextBlock('control help move up');
-    labelText.text = `Move up: 'w'\nMove down: 's'\nMove left: 'a'\nMove right: 'd'`;
+    labelText.text = `Move up: 'w'\nMove down: 's'\nMove left: 'a'\nMove right: 'd'\nPress 'm' to open the minimap`;
     labelText.textHorizontalAlignment = 0;
     labelText.paddingLeft = 20;
     labelText.paddingRight = 20;
