@@ -8,5 +8,5 @@
     "moduleResolution": "node",
     "downlevelIteration": true
   },
-  "types": ["babylonjs", "babylonjs-loaders"]
+  "types": ["babylonjs"]
 }

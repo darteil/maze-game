@@ -1,8 +1,12 @@
 {
   "name": "maze-game",
-  "version": "0.9.0",
+  "version": "1.0.0",
   "main": "main.ts",
   "author": "Romanov Yuri",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/darteil/MazeGame"
+  },
   "license": "MIT",
   "scripts": {
     "prod": "./node_modules/.bin/webpack --config ./config/webpack.prod.js --mode production",
