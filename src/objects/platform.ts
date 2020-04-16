@@ -1,5 +1,4 @@
 import * as BABYLON from 'babylonjs';
-import { Color3 } from 'babylonjs';
 
 export default class Platform {
   public scene: BABYLON.Scene;
@@ -8,7 +7,6 @@ export default class Platform {
   public isVisible = false;
   public row = 0;
   public column = 0;
-  // showAnimation: BABYLON.Animation;
 
   constructor(scene: BABYLON.Scene) {
     this.scene = scene;
@@ -18,8 +16,6 @@ export default class Platform {
 
     this.material.alpha = 0.0;
     this.material.diffuseColor = new BABYLON.Color3(1.0, 0.766, 0.336);
-    // this.material.glossiness = 0.0;
-    // this.material.microSurface = 1;
     this.mesh.material = this.material;
   }
 
@@ -28,7 +24,7 @@ export default class Platform {
     this.column = column;
   }
 
-  public setColor(color: Color3) {
+  public setColor(color: BABYLON.Color3) {
     this.material.diffuseColor = color;
   }
 
