@@ -164,7 +164,7 @@ export default class Game {
         if (j > 0) currentZCoordinate += 12;
 
         // default platform
-        if (map[i][j] === 'z') {
+        if (map[i][j] === '#') {
           const platform = new Platform(this.sceneInstance.scene);
           platform.setPosition(currentXCoordinate, -8, currentZCoordinate);
           platform.setColor(new BABYLON.Color3(1.0, 0.766, 0.336));
@@ -174,7 +174,7 @@ export default class Game {
         }
 
         // start platform
-        if (map[i][j] === 's') {
+        if (map[i][j] === 'S') {
           const platform = new Platform(this.sceneInstance.scene);
           platform.setPosition(currentXCoordinate, -8, currentZCoordinate);
           platform.setColor(new BABYLON.Color3(0.7, 1, 0));
@@ -185,7 +185,7 @@ export default class Game {
         }
 
         // finish platform
-        if (map[i][j] === 'f') {
+        if (map[i][j] === 'F') {
           const platform = new Platform(this.sceneInstance.scene);
           platform.setPosition(currentXCoordinate, -8, currentZCoordinate);
           platform.setColor(new BABYLON.Color3(0.3, 0.8, 1));
