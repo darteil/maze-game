@@ -1,3 +1,4 @@
+import MapGenerator from './mapGenerator';
 /**
  * z - default platform
  * s - start platform
@@ -226,73 +227,7 @@ export interface ILevel {
   map: string[][];
 }
 
-const maze: string[][] = [];
-const emptiness: (number | number[])[][] = [];
-
-const generate = (width: number, height: number) => {
-  const currentPosition = [0, 0];
-
-  for (var y = 0; y < height; y++) {
-    maze[y] = [];
-    for (var x = 0; x < width; maze[y][x++] = ' ') {}
-  }
-
-  const valid = (a: number, b: number) => {
-    return a < height && a >= 0 && b < width && b >= 0 ? true : false;
-  };
-
-  const amaze = (y: number, x: number, addBlockWalls: boolean) => {
-    maze[y][x] = '#';
-
-    if (addBlockWalls && valid(y + 1, x) && maze[y + 1][x] == ' ') emptiness.push([y + 1, x, [y, x]]);
-    if (addBlockWalls && valid(y - 1, x) && maze[y - 1][x] == ' ') emptiness.push([y - 1, x, [y, x]]);
-    if (addBlockWalls && valid(y, x + 1) && maze[y][x + 1] == ' ') emptiness.push([y, x + 1, [y, x]]);
-    if (addBlockWalls && valid(y, x - 1) && maze[y][x - 1] == ' ') emptiness.push([y, x - 1, [y, x]]);
-  };
-
-  amaze(currentPosition[0], currentPosition[1], true);
-
-  while (emptiness.length != 0) {
-    const randomWall = emptiness[Math.floor(Math.random() * emptiness.length)];
-    const host = randomWall[2] as number[];
-    const opposite = [
-      host[0] + ((randomWall[0] as number) - host[0]) * 2,
-      host[1] + ((randomWall[1] as number) - host[1]) * 2,
-    ];
-
-    if (valid(opposite[0], opposite[1])) {
-      if (maze[opposite[0]][opposite[1]] === '#') {
-        emptiness.splice(emptiness.indexOf(randomWall), 1);
-      } else {
-        amaze(randomWall[0] as number, randomWall[1] as number, false);
-        amaze(opposite[0], opposite[1], true);
-      }
-    } else emptiness.splice(emptiness.indexOf(randomWall), 1);
-  }
-};
-
-const setStart = (maze: string[][]) => {
-  const x = Math.floor(0 + Math.random() * (4 + 1 - 0));
-  const y = Math.floor(0 + Math.random() * (4 + 1 - 0));
-
-  if (maze[x][y] === ' ') {
-    maze[x][y] = 'S';
-  } else setStart(maze);
-};
-
-const setFinish = (maze: string[][]) => {
-  const x = Math.floor(0 + Math.random() * (4 + 1 - 0));
-  const y = Math.floor(0 + Math.random() * (4 + 1 - 0));
-
-  if (maze[x][y] === ' ') {
-    maze[x][y] = 'F';
-  } else setFinish(maze);
-};
-
-generate(5, 5);
-setStart(maze);
-setFinish(maze);
-console.log(maze);
+const mapGenerator = new MapGenerator(20, 20);
 
 export const Levels: ILevel[] = [
   {
@@ -336,9 +271,9 @@ export const Levels: ILevel[] = [
     map: map_08,
   },
   {
-    width: 5,
-    height: 5,
-    map: maze,
+    width: 20,
+    height: 20,
+    map: mapGenerator.generateMap(),
   },
 ];
 
