@@ -1,11 +1,10 @@
 import * as BABYLON from 'babylonjs';
 import SceneInstance from './scene';
-import { Levels, trainingLevel, ILevel } from './levels';
+import { trainingLevel, ILevel, generateNewMap } from './levels';
 import Platform from './objects/platform';
 import Cube from './objects/cube';
 import Ground from './objects/ground';
 import FollowCamera from './camera';
-import LevelsGui from './gui/levelsGui';
 import TrainingGui from './gui/trainingGui';
 import MiniMap from './miniMap';
 import { createVisibilityCoordinates } from './utils';
@@ -39,14 +38,13 @@ export default class Game {
   public startPlatform: Platform | null = null;
   public finishPlatform: Platform | null = null;
 
-  public currentLevel: number = 0;
+  private currentMap: ILevel;
 
   public cube: Cube;
   private followCamera: FollowCamera;
   private gameState: IGameState;
   private ground: Ground;
 
-  private levelsGui: LevelsGui | null = null;
   private trainingGui: TrainingGui | null = null;
 
   private miniMap: MiniMap;
@@ -69,12 +67,11 @@ export default class Game {
       firstRun: localStorage.getItem('maze_game_first_run') === 'yes',
     };
 
-    if (!this.gameState.firstRun) {
-      this.levelsGui = new LevelsGui(this, Levels.length, this.currentLevel);
-    }
     if (this.gameState.firstRun) {
       this.trainingGui = new TrainingGui(this);
     }
+
+    this.currentMap = generateNewMap();
   }
 
   public init() {
@@ -99,10 +96,10 @@ export default class Game {
 
   public start() {
     if (this.gameState.firstRun) {
-      this.createMap(trainingLevel);
+      this.renderMap(trainingLevel);
       this.trainingGui?.render();
     } else {
-      this.createMap(Levels[this.currentLevel]);
+      this.renderMap(this.currentMap);
     }
     if (this.startPlatform) {
       this.cube.setPosition(this.startPlatform.mesh.position.x, 9, this.startPlatform.mesh.position.z);
@@ -122,7 +119,6 @@ export default class Game {
 
     this.trainingGui?.disable();
     this.trainingGui?.dispose();
-    this.levelsGui = new LevelsGui(this, Levels.length, this.currentLevel);
   }
 
   public clear() {
@@ -145,13 +141,14 @@ export default class Game {
       ...this.gameState,
       moving: false,
     };
-    if (this.levelsGui) {
-      this.levelsGui.setCurrentLevel(this.currentLevel);
-    }
     this.miniMap.clear();
   }
 
-  private createMap(level: ILevel) {
+  private createNewMap() {
+    this.currentMap = generateNewMap();
+  }
+
+  private renderMap(level: ILevel) {
     const map = level.map;
 
     let currentXCoordinate = 0;
@@ -258,16 +255,10 @@ export default class Game {
         this.start();
         return;
       }
-      if (this.currentLevel === Levels.length - 1) {
-        this.clear();
-        this.start();
-        return;
-      } else {
-        this.currentLevel += 1;
-        this.clear();
-        this.start();
-        return;
-      }
+      this.clear();
+      this.createNewMap();
+      this.start();
+      return;
     }
     this.updateRoad();
   }
