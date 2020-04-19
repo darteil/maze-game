@@ -87,6 +87,10 @@ export default class MapGenerator {
     }
   }
 
+  /*---------------------------------------------------------------*/
+  /*                       ↓ ↓ ↓ magic ↓ ↓ ↓                       */
+  /*---------------------------------------------------------------*/
+
   public generateMap() {
     const MAZE = [...this.maze];
 
@@ -107,8 +111,8 @@ export default class MapGenerator {
 
     const abyssSections: abyssSection[] = [];
 
-    for (let i = 0; i < this.width; i++) {
-      for (let j = 0; j < this.height; j++) {
+    for (let i = 1; i < this.width - 2; i++) {
+      for (let j = 1; j < this.height - 2; j++) {
         if (MAZE[i][j] === ' ') {
           abyssSections.push({ x: i, y: j });
         }
@@ -121,7 +125,21 @@ export default class MapGenerator {
     };
 
     // set start platform
-    const randomAbyss = abyssSections[Math.floor(Math.random() * abyssSections.length)];
+    let applyStart = false;
+    let randomAbyss = { x: 0, y: 0 };
+
+    while (!applyStart) {
+      randomAbyss = abyssSections[Math.floor(Math.random() * abyssSections.length)];
+
+      if (
+        MAZE[randomAbyss.x + 1][randomAbyss.y] === '#' ||
+        MAZE[randomAbyss.x][randomAbyss.y + 1] === '#' ||
+        MAZE[randomAbyss.x - 1][randomAbyss.y] === '#' ||
+        MAZE[randomAbyss.x][randomAbyss.y - 1] === '#'
+      ) {
+        applyStart = true;
+      }
+    }
 
     MAZE[randomAbyss.x][randomAbyss.y] = 'S';
     start.x = randomAbyss.x;
@@ -134,8 +152,8 @@ export default class MapGenerator {
         const value = abyssSections[i];
 
         if (
-          Math.abs(start.x - value.x) >= Math.floor(this.width / 2) &&
-          Math.abs(start.y - value.y) >= Math.floor(this.height / 2)
+          Math.abs(start.x - value.x) >= Math.floor((this.width - 4) / 2) &&
+          Math.abs(start.y - value.y) >= Math.floor((this.height - 4) / 2)
         ) {
           MAZE[value.x][value.y] = 'F';
           applyFinish = true;
@@ -143,7 +161,6 @@ export default class MapGenerator {
       }
     }
 
-    // this.abyss = [];
     return MAZE;
   }
 }
