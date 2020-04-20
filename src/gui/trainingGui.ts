@@ -92,12 +92,12 @@ export default class TrainingGui {
 
   private renderControlHelp() {
     const label = new GUI.Rectangle('controls help');
-    label.background = 'black';
+    label.background = '#2c2c2c';
     label.height = '120px';
-    label.alpha = 0.7;
+    label.alpha = 1;
     label.width = '300px';
     label.cornerRadius = 0;
-    label.thickness = 1;
+    label.thickness = 2;
     label.verticalAlignment = GUI.Control.VERTICAL_ALIGNMENT_BOTTOM;
     label.horizontalAlignment = GUI.Control.HORIZONTAL_ALIGNMENT_LEFT;
     label.top = '-20px';
@@ -109,7 +109,7 @@ export default class TrainingGui {
     labelText.textHorizontalAlignment = 0;
     labelText.paddingLeft = 20;
     labelText.paddingRight = 20;
-    labelText.color = '#e6e6e6';
+    labelText.color = '#e7a044';
     label.addControl(labelText);
 
     this.controls.set(label.name ? label.name : 'control', label);
