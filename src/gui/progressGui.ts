@@ -23,12 +23,13 @@ export default class ProgressGui {
 
   public render() {
     const label = new GUI.Rectangle('progress');
-    label.background = '#2c2c2c';
+    label.background = '#e8dab2';
     label.height = '40px';
     label.alpha = 1;
     label.width = '235px';
     label.cornerRadius = 0;
-    label.thickness = 2;
+    label.thickness = 1;
+    label.color = '#c0d6df';
     label.horizontalAlignment = GUI.Container.HORIZONTAL_ALIGNMENT_LEFT;
     label.verticalAlignment = GUI.Control.VERTICAL_ALIGNMENT_TOP;
     label.top = '20px';
@@ -40,7 +41,7 @@ export default class ProgressGui {
     labelText.textHorizontalAlignment = 0;
     labelText.paddingLeft = 20;
     labelText.paddingRight = 20;
-    labelText.color = '#e7a044';
+    labelText.color = '#4f6d7a';
     label.addControl(labelText);
 
     this.controls.set(label.name ? label.name : 'control', label);
