@@ -32,7 +32,7 @@ export const trainingLevel: ILevel = {
   map: training_level,
 };
 
-export const generateNewMap = () => {
+export const generateNewMap = (): ILevel => {
   const generator = new MapGenerator(30, 30);
 
   return { width: 30, height: 30, map: generator.generateMap() };

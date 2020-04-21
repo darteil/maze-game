@@ -26,7 +26,7 @@ export default class Cube {
   }
 
   /**
-   * Create moving animation
+   * Create move animation
    * @param directional Options: 'up', 'down', 'left', 'right'
    */
   private createMoveAnimation(directional: string): BABYLON.Animation {

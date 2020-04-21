@@ -92,17 +92,18 @@ export default class Game {
     this.start();
   }
 
-  public enablePostProcess() {
-    const fxaaPostProcess = new BABYLON.FxaaPostProcess('fxaa', 2.0, this.sceneInstance.scene.activeCamera);
+  private initMiniMap() {
+    window.addEventListener('keydown', (event: KeyboardEvent) => {
+      if (event.which === 77) {
+        this.miniMap.toggle();
+      }
+    });
   }
 
-  /*private addToShadowGenerator(mesh: BABYLON.Mesh) {
-    const shadowMap = this.sceneInstance.shadowGenerator.getShadowMap();
-
-    if (shadowMap && shadowMap.renderList) {
-      shadowMap.renderList.push(mesh);
-    }
-  }*/
+  public enablePostProcess() {
+    const fxaaPostProcess = new BABYLON.FxaaPostProcess('fxaa', 2.0, this.sceneInstance.scene.activeCamera);
+    fxaaPostProcess.enablePixelPerfectMode = true;
+  }
 
   public start() {
     if (this.gameState.firstRun) {
@@ -347,14 +348,6 @@ export default class Game {
 
       if (Controls.right === key) {
         this.moveAction('right');
-      }
-    });
-  }
-
-  private initMiniMap() {
-    window.addEventListener('keydown', (event: KeyboardEvent) => {
-      if (event.which === 77) {
-        this.miniMap.toggle();
       }
     });
   }

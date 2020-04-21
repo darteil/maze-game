@@ -3,8 +3,12 @@ type abyssSection = {
   y: number;
 };
 
-interface ICurrentPosition extends abyssSection {}
-interface IStartPosition extends abyssSection {}
+interface ICurrentPosition {
+  x: number;
+  y: number;
+}
+
+interface IStartPosition extends ICurrentPosition {}
 
 interface IAbyssSection extends ICurrentPosition {
   host: {
@@ -42,7 +46,6 @@ export default class MapGenerator {
     this.maze[y][x] = '#';
 
     if (addAbyss && this.valid(y + 1, x) && this.maze[y + 1][x] == ' ') {
-      // this.abyss.push([y + 1, x, [y, x]])
       this.abyss.push({
         x,
         y: y + 1,
@@ -53,7 +56,6 @@ export default class MapGenerator {
       });
     }
     if (addAbyss && this.valid(y - 1, x) && this.maze[y - 1][x] == ' ') {
-      // this.emptiness.push([y - 1, x, [y, x]])
       this.abyss.push({
         x,
         y: y - 1,
@@ -64,7 +66,6 @@ export default class MapGenerator {
       });
     }
     if (addAbyss && this.valid(y, x + 1) && this.maze[y][x + 1] == ' ') {
-      // this.emptiness.push([y, x + 1, [y, x]])
       this.abyss.push({
         x: x + 1,
         y,
@@ -75,7 +76,6 @@ export default class MapGenerator {
       });
     }
     if (addAbyss && this.valid(y, x - 1) && this.maze[y][x - 1] == ' ') {
-      // this.emptiness.push([y, x - 1, [y, x]])
       this.abyss.push({
         x: x - 1,
         y,

@@ -5,7 +5,6 @@ export default class SceneInstance {
   public directionalLight_01: BABYLON.DirectionalLight;
   public directionalLight_02: BABYLON.DirectionalLight;
   public hemisphericLight: BABYLON.HemisphericLight;
-  // public shadowGenerator: BABYLON.ShadowGenerator;
 
   constructor(engine: BABYLON.Engine) {
     this.scene = new BABYLON.Scene(engine);
@@ -27,13 +26,5 @@ export default class SceneInstance {
       this.scene,
     );
     this.directionalLight_02.intensity = 0.7;
-
-    // this.shadowGenerator = new BABYLON.ShadowGenerator(1024, this.directionalLight);
-    // this.shadowGenerator.useBlurCloseExponentialShadowMap = true;
-    // this.shadowGenerator.forceBackFacesOnly = true;
-    // this.shadowGenerator.blurKernel = 32;
-    // this.shadowGenerator.useKernelBlur = true;
-    // this.directionalLight.shadowMinZ = 10;
-    // this.directionalLight.shadowMaxZ = 70;
   }
 }
