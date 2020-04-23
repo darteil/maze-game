@@ -33,7 +33,7 @@ export default class Platform {
   }
 
   /**
-   * Create moving animation
+   * Create move animation
    * @param type Options: 'hide', 'show'
    */
   private createAnimation(type: string) {

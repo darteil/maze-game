@@ -14,12 +14,13 @@ export default class TrainingGui {
 
   private renderStartLabel() {
     const label = new GUI.Rectangle('start label');
-    label.background = 'black';
+    label.background = '#e8dab2';
     label.height = '30px';
-    label.alpha = 0.7;
+    label.alpha = 1;
     label.width = '100px';
     label.cornerRadius = 0;
     label.thickness = 1;
+    label.color = '#c0d6df';
     this.guiTexture.addControl(label);
     if (this.game.startPlatform) {
       label.linkWithMesh(this.game.startPlatform.mesh);
@@ -29,7 +30,7 @@ export default class TrainingGui {
 
     const labelText = new GUI.TextBlock('start text block');
     labelText.text = 'Start';
-    labelText.color = '#72a200';
+    labelText.color = '#4f6d7a';
     label.addControl(labelText);
 
     const line = new GUI.Line('start label line');
@@ -53,12 +54,13 @@ export default class TrainingGui {
 
   private renderFinishLabel() {
     const label = new GUI.Rectangle('finish label');
-    label.background = 'black';
+    label.background = '#e8dab2';
     label.height = '30px';
-    label.alpha = 0.7;
+    label.alpha = 1;
     label.width = '100px';
     label.cornerRadius = 0;
     label.thickness = 1;
+    label.color = '#c0d6df';
     this.guiTexture.addControl(label);
     if (this.game.finishPlatform) {
       label.linkWithMesh(this.game.finishPlatform.mesh);
@@ -68,7 +70,7 @@ export default class TrainingGui {
 
     const labelText = new GUI.TextBlock('start text block');
     labelText.text = 'Finish';
-    labelText.color = '#45b9e6';
+    labelText.color = '#4f6d7a';
     label.addControl(labelText);
 
     const line = new GUI.Line('finish label line');
@@ -92,12 +94,13 @@ export default class TrainingGui {
 
   private renderControlHelp() {
     const label = new GUI.Rectangle('controls help');
-    label.background = 'black';
-    label.height = '120px';
-    label.alpha = 0.7;
+    label.background = '#e8dab2';
+    label.height = '140px';
+    label.alpha = 1;
     label.width = '300px';
     label.cornerRadius = 0;
     label.thickness = 1;
+    label.color = 'c0d6df';
     label.verticalAlignment = GUI.Control.VERTICAL_ALIGNMENT_BOTTOM;
     label.horizontalAlignment = GUI.Control.HORIZONTAL_ALIGNMENT_LEFT;
     label.top = '-20px';
@@ -105,11 +108,11 @@ export default class TrainingGui {
     this.guiTexture.addControl(label);
 
     const labelText = new GUI.TextBlock('control help move up');
-    labelText.text = `Move up: 'w'\nMove down: 's'\nMove left: 'a'\nMove right: 'd'\nPress 'm' to open the minimap`;
+    labelText.text = `Move up: 'w'\nMove down: 's'\nMove left: 'a'\nMove right: 'd'\n\nPress 'm' to open the minimap`;
     labelText.textHorizontalAlignment = 0;
     labelText.paddingLeft = 20;
     labelText.paddingRight = 20;
-    labelText.color = '#e6e6e6';
+    labelText.color = '#4f6d7a';
     label.addControl(labelText);
 
     this.controls.set(label.name ? label.name : 'control', label);

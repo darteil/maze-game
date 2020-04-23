@@ -6,6 +6,7 @@ import Cube from './objects/cube';
 import Ground from './objects/ground';
 import FollowCamera from './camera';
 import TrainingGui from './gui/trainingGui';
+import ProgressGui from './gui/progressGui';
 import MiniMap from './miniMap';
 import { createVisibilityCoordinates } from './utils';
 
@@ -21,6 +22,7 @@ import { createVisibilityCoordinates } from './utils';
 interface IGameState {
   moving: boolean;
   firstRun?: boolean;
+  mazesCompleted: string;
 }
 
 const Controls = {
@@ -46,6 +48,7 @@ export default class Game {
   private ground: Ground;
 
   private trainingGui: TrainingGui | null = null;
+  private progressGui: ProgressGui | null = null;
 
   private miniMap: MiniMap;
 
@@ -62,10 +65,17 @@ export default class Game {
       localStorage.setItem('maze_game_first_run', 'yes');
     }
 
+    if (!localStorage.getItem('maze_game_mazes_completed')) {
+      localStorage.setItem('maze_game_mazes_completed', '0');
+    }
+
     this.gameState = {
       moving: false,
       firstRun: localStorage.getItem('maze_game_first_run') === 'yes',
+      mazesCompleted: localStorage.getItem('maze_game_mazes_completed') as string,
     };
+
+    this.progressGui = new ProgressGui(this.sceneInstance.scene, +this.gameState.mazesCompleted);
 
     if (this.gameState.firstRun) {
       this.trainingGui = new TrainingGui(this);
@@ -82,17 +92,18 @@ export default class Game {
     this.start();
   }
 
-  public enablePostProcess() {
-    const fxaaPostProcess = new BABYLON.FxaaPostProcess('fxaa', 2.0, this.sceneInstance.scene.activeCamera);
+  private initMiniMap() {
+    window.addEventListener('keydown', (event: KeyboardEvent) => {
+      if (event.which === 77) {
+        this.miniMap.toggle();
+      }
+    });
   }
 
-  /*private addToShadowGenerator(mesh: BABYLON.Mesh) {
-    const shadowMap = this.sceneInstance.shadowGenerator.getShadowMap();
-
-    if (shadowMap && shadowMap.renderList) {
-      shadowMap.renderList.push(mesh);
-    }
-  }*/
+  public enablePostProcess() {
+    const fxaaPostProcess = new BABYLON.FxaaPostProcess('fxaa', 2.0, this.sceneInstance.scene.activeCamera);
+    fxaaPostProcess.enablePixelPerfectMode = true;
+  }
 
   public start() {
     if (this.gameState.firstRun) {
@@ -100,6 +111,7 @@ export default class Game {
       this.trainingGui?.render();
     } else {
       this.renderMap(this.currentMap);
+      this.progressGui?.setCurrentCount(+this.gameState.mazesCompleted);
     }
     if (this.startPlatform) {
       this.cube.setPosition(this.startPlatform.mesh.position.x, 9, this.startPlatform.mesh.position.z);
@@ -255,6 +267,17 @@ export default class Game {
         this.start();
         return;
       }
+
+      const count = localStorage.getItem('maze_game_mazes_completed');
+
+      if (count) {
+        localStorage.setItem('maze_game_mazes_completed', `${+count + 1}`);
+        this.gameState = {
+          ...this.gameState,
+          mazesCompleted: `${+count + 1}`,
+        };
+      }
+
       this.clear();
       this.createNewMap();
       this.start();
@@ -325,14 +348,6 @@ export default class Game {
 
       if (Controls.right === key) {
         this.moveAction('right');
-      }
-    });
-  }
-
-  private initMiniMap() {
-    window.addEventListener('keydown', (event: KeyboardEvent) => {
-      if (event.which === 77) {
-        this.miniMap.toggle();
       }
     });
   }
