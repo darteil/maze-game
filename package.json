@@ -9,7 +9,7 @@
   },
   "license": "MIT",
   "scripts": {
-    "dev": "./node_modules/.bin/webpack-dev-server --config ./config/webpack.dev.js --mode development",
+    "start": "./node_modules/.bin/webpack-dev-server --config ./config/webpack.dev.js --mode development",
     "lint": "./node_modules/.bin/prettier --config ./.prettierrc.js ./src/**/*.ts --write"
   },
   "devDependencies": {

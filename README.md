@@ -11,7 +11,7 @@ Install dependencies and start:
 
 ```sh
 $ npm install
-$ npm run dev
+$ npm start
 ```
 
 ### Other
