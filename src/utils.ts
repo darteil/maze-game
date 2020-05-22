@@ -72,9 +72,10 @@ export const enableDeveloperTools = (game: Game) => {
  * @param step distance to the center of the neighboring object
  */
 export const createVisibilityCoordinates = (x: number, z: number, step: number): string[] => {
+  // visibility area
   const visibility = 2;
 
-  const coordinates = [
+  return [
     `x: ${x}, z: ${z}`,
     `x: ${x - step}, z: ${z}`,
     `x: ${x - step}, z: ${z + step}`,
@@ -104,6 +105,4 @@ export const createVisibilityCoordinates = (x: number, z: number, step: number):
     `x: ${x - step}, z: ${z + step * visibility}`,
     `x: ${x + step}, z: ${z - step * visibility}`,
   ];
-
-  return coordinates;
 };
