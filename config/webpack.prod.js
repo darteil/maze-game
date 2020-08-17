@@ -33,7 +33,9 @@ module.exports = (env, argv) => {
       new CleanWebpackPlugin({
         cleanOnceBeforeBuildPatterns: path.resolve(__dirname, '../dist'),
       }),
-      new CopyWebpackPlugin([{ from: publicPathFolder }]),
+      new CopyWebpackPlugin({
+        patterns: [{ from: publicPathFolder, to: distPath }],
+      }),
     ],
   });
 };
