@@ -47,10 +47,10 @@ export default class MiniMap {
     });
 
     const legendCubeIcon = new Konva.Rect({
-      x: 0,
+      x: 1,
       y: 610,
-      width: 20,
-      height: 20,
+      width: 19,
+      height: 19,
       fill: CUBE_COLOR,
       stroke: 'black',
       strokeWidth: 1,
@@ -64,10 +64,10 @@ export default class MiniMap {
     });
 
     const legendPlatformIcon = new Konva.Rect({
-      x: 80,
+      x: 81,
       y: 610,
-      width: 20,
-      height: 20,
+      width: 19,
+      height: 19,
       fill: PLATFORM_COLOR,
       stroke: 'black',
       strokeWidth: 1,
