@@ -85,7 +85,7 @@ export default class Game {
   }
 
   public init() {
-    this.enablePostProcess();
+    // this.enablePostProcess();
     this.initControl();
     this.render();
     this.initMiniMap();
