@@ -30,6 +30,7 @@ export default class MiniMap {
     this.mainLayer = new Konva.Layer();
     this.mapLayer = new Konva.Layer();
     this.playerLayer = new Konva.Layer();
+    this.container.style.visibility = 'hidden';
     this.stage.hide();
 
     this.init();
@@ -145,8 +146,10 @@ export default class MiniMap {
   public toggle() {
     if (this.showStatus) {
       this.stage.hide();
+      this.container.style.visibility = 'hidden';
       this.showStatus = false;
     } else {
+      this.container.style.visibility = 'visible';
       this.stage.show();
       this.stage.draw();
       this.showStatus = true;
