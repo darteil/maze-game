@@ -24,9 +24,9 @@ $ npm run lint
 
 ### Using libraries
 
-[Babylon.js](https://www.babylonjs.com/)
+[Babylon.js](https://www.babylonjs.com/),
 [Konva](https://konvajs.org/)
 
 ### License
 
-MIT License, Copyright (c) 2020 Romanov Yuri
+MIT License, Copyright (c) 2021 Romanov Yuri
