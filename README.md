@@ -2,7 +2,7 @@
 
 [![GitHub license](https://img.shields.io/badge/license-MIT-blue.svg)](https://github.com/darteil/MazeGame/blob/master/LICENSE.md) [![pipeline status](https://gitlab.com/darteil_projects/MazeGame/badges/master/pipeline.svg)](https://gitlab.com/darteil_projects/MazeGame/commits/master)
 
-![](http://darteil-projects.ru/static/images/sc-maze-game.png)
+![](media/demo.gif)
 
 ### Installation and run project.
 
