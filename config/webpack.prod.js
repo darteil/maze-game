@@ -1,4 +1,4 @@
-const merge = require('webpack-merge');
+const { merge } = require('webpack-merge');
 const path = require('path');
 const { CleanWebpackPlugin } = require('clean-webpack-plugin');
 const CopyWebpackPlugin = require('copy-webpack-plugin');
@@ -18,8 +18,8 @@ module.exports = (env, argv) => {
     stats: 'errors-only',
     output: {
       path: distPath,
-      filename: 'js/[name].[hash].js',
-      chunkFilename: 'js/[name].[hash].chunk.js',
+      filename: 'js/[name].[contenthash].js',
+      chunkFilename: 'js/[name].[chunkhash].chunk.js',
       publicPath: publicPath,
     },
     optimization: {
@@ -28,7 +28,7 @@ module.exports = (env, argv) => {
     plugins: [
       new WebpackBar(),
       new MiniCssExtractPlugin({
-        filename: 'css/[name].[hash].css',
+        filename: 'css/[name].[contenthash].css',
       }),
       new CleanWebpackPlugin({
         cleanOnceBeforeBuildPatterns: path.resolve(__dirname, '../dist'),
