@@ -34,7 +34,15 @@ module.exports = (env, argv) => {
         cleanOnceBeforeBuildPatterns: path.resolve(__dirname, '../dist'),
       }),
       new CopyWebpackPlugin({
-        patterns: [{ from: publicPathFolder, to: distPath }],
+        patterns: [
+          {
+            globOptions: {
+              ignore: ['**/index.html'],
+            },
+            from: publicPathFolder,
+            to: distPath,
+          },
+        ],
       }),
     ],
   });
