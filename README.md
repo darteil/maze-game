@@ -1,6 +1,6 @@
 # Maze game
 
-[![GitHub license](https://img.shields.io/badge/license-MIT-blue.svg)](https://github.com/darteil/MazeGame/blob/master/LICENSE.md) [![pipeline status](https://gitlab.com/darteil_projects/MazeGame/badges/master/pipeline.svg)](https://gitlab.com/darteil_projects/MazeGame/commits/master)
+[![GitHub license](https://img.shields.io/github/license/darteil/MazeGame?style=for-the-badge)](https://github.com/darteil/MazeGame/blob/master/LICENSE.md) [![pipeline status](https://img.shields.io/gitlab/pipeline/darteil_projects/MazeGame/master?style=for-the-badge)](https://gitlab.com/darteil_projects/MazeGame/commits/master)
 
 ![](media/demo.gif)
 
