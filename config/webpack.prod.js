@@ -4,7 +4,7 @@ const { CleanWebpackPlugin } = require('clean-webpack-plugin');
 const CopyWebpackPlugin = require('copy-webpack-plugin');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 const TerserJSPlugin = require('terser-webpack-plugin');
-const OptimizeCSSAssetsPlugin = require('optimize-css-assets-webpack-plugin');
+const CssMinimizerPlugin = require("css-minimizer-webpack-plugin");
 const base = require('./webpack.base');
 
 const distPath = path.resolve(__dirname, '../dist');
@@ -22,7 +22,7 @@ module.exports = (env, argv) => {
       publicPath: publicPath,
     },
     optimization: {
-      minimizer: [new TerserJSPlugin({ extractComments: false }), new OptimizeCSSAssetsPlugin({})],
+      minimizer: [new TerserJSPlugin({ extractComments: false }), new CssMinimizerPlugin()],
     },
     plugins: [
       new MiniCssExtractPlugin({
