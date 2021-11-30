@@ -8,8 +8,10 @@
     "url": "https://github.com/darteil/maze-game"
   },
   "license": "MIT",
+  "homepage": "https://darteil.github.io/maze-game",
   "scripts": {
-    "build": "./node_modules/.bin/webpack --config ./config/webpack.prod.js --mode production"
+    "build": "./node_modules/.bin/webpack --config ./config/webpack.prod.js --mode production",
+    "deploy": "gh-pages -d dist"
   },
   "devDependencies": {
     "clean-webpack-plugin": "^4.0.0",
