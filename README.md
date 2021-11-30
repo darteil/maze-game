@@ -1,6 +1,6 @@
 # Maze game
 
-[![GitHub license](https://img.shields.io/github/license/darteil/MazeGame?style=for-the-badge)](https://github.com/darteil/MazeGame/blob/master/LICENSE.md) [![pipeline status](https://img.shields.io/gitlab/pipeline/darteil_projects/MazeGame/master?style=for-the-badge)](https://gitlab.com/darteil_projects/MazeGame/commits/master)
+[![GitHub license](https://img.shields.io/github/license/darteil/MazeGame?style=for-the-badge)](https://github.com/darteil/MazeGame/blob/master/LICENSE.md)
 
 ![](media/demo.gif)
 
@@ -12,14 +12,6 @@ Install dependencies and start:
 ```sh
 $ npm install
 $ npm start
-```
-
-### Other
-
-Check code formatting errors:
-
-```sh
-$ npm run lint
 ```
 
 ### Using libraries
