@@ -32,6 +32,13 @@ const Controls = {
   down: 83,
 };
 
+enum moveDirections {
+  up,
+  down,
+  right,
+  left,
+}
+
 export default class Game {
   public sceneInstance: SceneInstance;
   public canvas: HTMLCanvasElement;
@@ -286,40 +293,34 @@ export default class Game {
     this.updateRoad();
   }
 
-  /**
-   * Cube movement
-   * @param directional Options: 'up', 'down', 'left', 'right'
-   */
-  private async moveAction(directional: string) {
+  private async moveAction(directional: moveDirections) {
     if (this.gameState.moving) return;
     this.gameState.moving = true;
 
-    if (directional === 'up' || directional === 'down' || directional === 'left' || directional === 'right') {
-      if (this.gameState.firstRun) {
-        this.trainingGui?.disable();
-      }
+    if (this.gameState.firstRun) {
+      this.trainingGui?.disable();
     }
 
     switch (directional) {
-      case 'up': {
+      case moveDirections.up: {
         await Promise.all([this.cube.moveUp(), this.followCamera.moveUp()]);
         this.cubeMovingCheck();
         this.gameState.moving = false;
         break;
       }
-      case 'down': {
+      case moveDirections.down: {
         await Promise.all([this.cube.moveDown(), this.followCamera.moveDown()]);
         this.cubeMovingCheck();
         this.gameState.moving = false;
         break;
       }
-      case 'left': {
+      case moveDirections.left: {
         await Promise.all([this.cube.moveLeft(), this.followCamera.moveLeft()]);
         this.cubeMovingCheck();
         this.gameState.moving = false;
         break;
       }
-      case 'right': {
+      case moveDirections.right: {
         await Promise.all([this.cube.moveRight(), this.followCamera.moveRight()]);
         this.cubeMovingCheck();
         this.gameState.moving = false;
@@ -335,19 +336,19 @@ export default class Game {
       const key = event.which;
 
       if (Controls.up === key) {
-        this.moveAction('up');
+        this.moveAction(moveDirections.up);
       }
 
       if (Controls.down === key) {
-        this.moveAction('down');
+        this.moveAction(moveDirections.down);
       }
 
       if (Controls.left === key) {
-        this.moveAction('left');
+        this.moveAction(moveDirections.left);
       }
 
       if (Controls.right === key) {
-        this.moveAction('right');
+        this.moveAction(moveDirections.right);
       }
     });
   }
