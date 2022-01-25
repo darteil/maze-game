@@ -9,7 +9,7 @@
   },
   "license": "MIT",
   "scripts": {
-    "start": "./node_modules/.bin/webpack serve --config ./config/webpack.dev.js --mode development"
+    "start": "NODE_OPTIONS=--openssl-legacy-provider ./node_modules/.bin/webpack serve --config ./config/webpack.dev.js --mode development"
   },
   "devDependencies": {
     "clean-webpack-plugin": "^4.0.0",
