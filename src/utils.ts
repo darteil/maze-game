@@ -66,7 +66,7 @@ export const enableDeveloperTools = (game: Game) => {
 };
 
 /**
- * Object visibility coordinates
+ * Options
  * @param x position of the object
  * @param z position of the object
  * @param step distance to the center of the neighboring object

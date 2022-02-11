@@ -1,5 +1,7 @@
 import * as BABYLON from 'babylonjs';
 
+type MoveDirectional = 'up' | 'down' | 'left' | 'right';
+
 export default class FollowCamera {
   public scene: BABYLON.Scene;
   public camera: BABYLON.FollowCamera;
@@ -18,11 +20,7 @@ export default class FollowCamera {
     this.camera.setTarget(target.getAbsolutePosition());
   }
 
-  /**
-   * Create move animation
-   * @param directional Options: 'up', 'down', 'left', 'right'
-   */
-  private createMoveAnimation(directional: string) {
+  private createMoveAnimation(directional: MoveDirectional) {
     const keys = [];
 
     const animation = new BABYLON.Animation(

@@ -1,5 +1,7 @@
 import * as BABYLON from 'babylonjs';
 
+type MoveOption = 'hide' | 'show';
+
 export default class Platform {
   public scene: BABYLON.Scene;
   public mesh: BABYLON.Mesh;
@@ -32,11 +34,7 @@ export default class Platform {
     this.mesh.position.set(x, y, z);
   }
 
-  /**
-   * Create move animation
-   * @param type Options: 'hide', 'show'
-   */
-  private createAnimation(type: string) {
+  private createAnimation(type: MoveOption) {
     let keys = [];
 
     const animationMove = new BABYLON.Animation(
@@ -108,14 +106,12 @@ export default class Platform {
   }
 
   hide() {
-    const animation = this.createAnimation('hide');
-    this.scene.beginDirectAnimation(this.mesh, [...animation], 0, 100, false, 5);
+    this.scene.beginDirectAnimation(this.mesh, this.createAnimation('hide'), 0, 100, false, 5);
     this.isVisible = false;
   }
 
   show() {
-    const animation = this.createAnimation('show');
-    this.scene.beginDirectAnimation(this.mesh, [...animation], 0, 100, false, 5);
+    this.scene.beginDirectAnimation(this.mesh, this.createAnimation('show'), 0, 100, false, 5);
     this.isVisible = true;
   }
 }
