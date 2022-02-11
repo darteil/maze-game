@@ -1,5 +1,7 @@
 import * as BABYLON from 'babylonjs';
 
+type MoveDirectional = 'up' | 'down' | 'left' | 'right';
+
 export default class Cube {
   public scene: BABYLON.Scene;
   public mesh: BABYLON.Mesh;
@@ -25,11 +27,7 @@ export default class Cube {
     this.column = column;
   }
 
-  /**
-   * Create move animation
-   * @param directional Options: 'up', 'down', 'left', 'right'
-   */
-  private createMoveAnimation(directional: string): BABYLON.Animation {
+  private createMoveAnimation(directional: MoveDirectional): BABYLON.Animation {
     const keys = [];
 
     const animation = new BABYLON.Animation(

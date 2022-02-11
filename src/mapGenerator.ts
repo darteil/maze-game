@@ -92,7 +92,7 @@ export default class MapGenerator {
   /*---------------------------------------------------------------*/
 
   public generateMap() {
-    const MAZE = [...this.maze];
+    const MAZE = this.maze;
 
     while (this.abyss.length !== 0) {
       const randomAbyssSection = this.abyss[Math.floor(Math.random() * this.abyss.length)];
