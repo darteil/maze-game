@@ -260,10 +260,19 @@ export default class Game {
     return currentPosition === finishPlatformPosition;
   }
 
+  private restart() {
+    if (this.startPlatform) {
+      this.cube.setPosition(this.startPlatform.mesh.position.x, 9, this.startPlatform.mesh.position.z);
+      this.cube.set2dPosition(this.startPlatform.row, this.startPlatform.column);
+    }
+    this.followCamera.setTarget(this.cube.mesh);
+    this.miniMap.clear();
+    this.cubeMovingCheck();
+  }
+
   private cubeMovingCheck() {
     if (!this.cubeCorrectPositionCheck() && !this.cubeFinishPositionCheck()) {
-      this.clear();
-      this.start();
+      this.restart();
       return;
     }
 
