@@ -21,4 +21,4 @@ $ npm start
 
 ### License
 
-MIT License, Copyright (c) 2020-2021 Romanov Yuri
+MIT License, Copyright (c) 2020 Romanov Yuri
